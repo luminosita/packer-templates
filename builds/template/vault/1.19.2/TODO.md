@@ -1,0 +1,8 @@
+- [x] HDD resize
+- [x] Memory final?
+- [x] Random VM id scope
+- [x] Run Vault install script in cloud-init
+- [ ] Cleanup 
+    - [ ] Remove Packer User
+- [ ] Download cloud-init, cloud-init-output logs
+- [ ] Vault SSH Helper
