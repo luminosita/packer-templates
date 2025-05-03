@@ -1,4 +1,0 @@
-- [ ] HDD is too big (minimum size)
-- [ ] Memory too big
-- [ ] CPU type?
-- [ ] Random VM id scope

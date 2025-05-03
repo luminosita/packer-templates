@@ -30,6 +30,23 @@ locals {
 build {
   sources = ["source.proxmox-clone.alpine"]
 
+  provisioner "file" {
+    source=var.vault_api_cert_file
+    destination="./vault.crt"
+  }
+
+  provisioner "shell" {
+    inline = [
+      "echo 'Upload Vault TLS certificate'",
+      "sudo mv ./vault.crt /etc/vault-ssh-helper.d/vault.crt",
+      "sudo chown root:root /etc/vault-ssh-helper.d/vault.crt",
+      "echo 'Performing cleanup ...'",
+      "rm .ssh/authorized_keys",
+      "sudo usermod -L packer",
+      "sudo passwd -d packer"
+    ]
+  }
+
   post-processor "manifest" {
     output     = local.manifest_output
     strip_path = true

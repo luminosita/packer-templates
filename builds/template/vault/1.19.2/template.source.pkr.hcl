@@ -7,8 +7,7 @@ locals {
   data_source_content = {
     "/meta-data" = file("${abspath(path.root)}/data/meta-data")
     "/user-data" = templatefile("${abspath(path.root)}/data/user-data.pkrtpl.hcl", {
-      product                  = "vault"
-      version                  = "1.19.2"
+      vault_api_url            = var.vault_api_url
       build_username           = var.build_username
       build_password           = var.build_password
       build_password_encrypted = var.build_password_encrypted

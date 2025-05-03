@@ -32,7 +32,7 @@ users:
 - lock_passwd: false
   name: packer      #Required for Packer
   plain_text_passwd: VagTbNI5uxwST
-  ssh_authorized_keys:
+  ssh_authorized_keys:  
   - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDDVZwrtkO/qrENgxZFmtoh1v4nypoNhyI6cruNNrYvnGE+l6+WgtDKDKQF3iFZegP0Uk7t+rRKFrFikVfJcm5wONjgrQ2N4xvuNdKSHzaFdWQtfNNmM3ePCFZNrJ3qhJmZ2UnIqbv1x5PoEbRk/b/tDrrAxJCXJgkrx+0EE3qUJREeyn8CiVgk6izxnramAaLEocpqPn0dGi1NtSHACMDf+YTq31gPMd41MkpjjqMgMG/4rON7mDoQl4VIaTH/fWVbDzZhmYg2jF3IKqaygJb9nRhGyKqfDpTxp+acPxo0juzpcNrcbM1awIy8izdwsLsrt4bxAxVTUT/B6+Lpys/jkTHaiBmAZHY20nAyxGdsaFg33N+x0nogJoDMwPpj9PknOe61AOaBYhpNLf6L9ZIHfoJ07P5jkT74pZaHbdSLeR8LBJif2bSufvmjAsN5SL37CdlxwJE6Ov3zf5tOvxjDOi/Foyj41+RS4HfVxdHVIiEh1fuqkJBCoIhX/dGoaTsFKmnQ3bmSrkRyAB0WSHOjqnkj/bpT3eWA1e4TCdTKdMAqcLhufSeftc7evcoh3nuX2LUd32p9XxHuIUKYB3iobl6QRIrep7QKYM2IZlFPV+nAC+Pvfzuv2u+aJvq3hnmC2eiCFXVYmowi1epwLeZ848yR+e2ikkIRbbMWLWGVLQ== milosh@gianni
 power_state:
   delay: now
@@ -43,23 +43,31 @@ write_files:
 - content: |
     PermitRootLogin no
     PasswordAuthentication no
-    ChallengeResponseAuthentication no
+    ChallengeResponseAuthentication yes
+    UsePAM yes
   path: /etc/ssh/sshd_config.d/01-harden-ssh.conf
 - content: |
     vault ALL=(ALL) NOPASSWD:ALL
+    packer ALL=(ALL) NOPASSWD:ALL     #Required for Packer
   path: /etc/sudoers.d/vault
 - content: |-
     #!/bin/bash
-    wget https://releases.hashicorp.com/${product}/${version}/${product}_${version}_linux_amd64.zip && \
-      wget https://releases.hashicorp.com/${product}/${version}/${product}_${version}_SHA256SUMS && \
-      wget https://releases.hashicorp.com/${product}/${version}/${product}_${version}_SHA256SUMS.sig && \
-      wget -qO- https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
-      gpg --verify ${product}_${version}_SHA256SUMS.sig ${product}_${version}_SHA256SUMS && \
-      grep ${product}_${version}_linux_amd64.zip ${product}_${version}_SHA256SUMS | sha256sum -c && \
-      unzip ${product}_${version}_linux_amd64.zip -d /tmp && \
-      mv /tmp/${product} /usr/local/bin/${product} && \
-      rm -f ${product}_${version}_linux_amd64.zip ${product}_${version}_SHA256SUMS ${product}_${version}_SHA256SUMS.sig && \
-      rm -f /tmp/LICENSE.txt
+
+    install() {
+      wget https://releases.hashicorp.com/$1/$2/$1_$2_linux_amd64.zip && \
+        wget https://releases.hashicorp.com/$1/$2/$1_$2_SHA256SUMS && \
+        wget https://releases.hashicorp.com/$1/$2/$1_$2_SHA256SUMS.sig && \
+        wget -qO- https://www.hashicorp.com/.well-known/pgp-key.txt | gpg --import && \
+        gpg --verify $1_$2_SHA256SUMS.sig $1_$2_SHA256SUMS && \
+        grep $1_$2_linux_amd64.zip $1_$2_SHA256SUMS | sha256sum -c && \
+        unzip $1_$2_linux_amd64.zip -d /tmp && \
+        mv /tmp/$1 /usr/local/bin/$1 && \
+        rm -f $1_$2_linux_amd64.zip $1_$2_SHA256SUMS $1_$2_SHA256SUMS.sig && \
+        rm -f /tmp/LICENSE.txt
+    }
+
+    install "vault" "1.19.2"
+    install "vault-ssh-helper" "0.2.1"
 
     user=vault
     group=vault
@@ -76,6 +84,15 @@ write_files:
   path: "/root/install_vault.sh"
   owner: "root:root"
   permissions: "0755"
+- content: |-
+    vault_addr = "${vault_api_url}"
+    ssh_mount_point = "ssh"
+    ca_cert = "/etc/vault-ssh-helper.d/vault.crt"
+    tls_skip_verify = false
+    allowed_roles = "*"
+  path: "/etc/vault-ssh-helper.d/config.hcl"
+  owner: "root:root"
+  permissions: "0644"
 - content: |-
     #!/sbin/openrc-run
 
