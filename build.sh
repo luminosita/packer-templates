@@ -379,7 +379,6 @@ menu_option_12() {
   ### Start the Build. ###
   echo "Starting the build...."
   packer build -force \
-      -var-file="$CONFIG_PATH/ansible.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/build.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/common.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/linux-storage.pkrvars.hcl" \
@@ -487,7 +486,7 @@ menu_option_cloud_image() {
 
 menu_option_template() {
   INPUT_PATH="$SCRIPT_PATH"/builds/template/$2
-  echo -e "\nCONFIRM: Build $1 ($3) template?"
+  echo -e "\nCONFIRM: Build $1 ($4) template?"
   echo -e "\nContinue? (y/n)"
   read -r REPLY
   if [[ ! $REPLY =~ ^[Yy]$ ]]
@@ -495,7 +494,7 @@ menu_option_template() {
     exit 1
   fi
 
-  echo "Building a $1 ($3) template for Proxmox..."
+  echo "Building a $1 ($4) template for Proxmox..."
 
   ### Initialize HashiCorp Packer and required plugins. ###
   echo "Initializing HashiCorp Packer and required plugins..."
@@ -504,7 +503,8 @@ menu_option_template() {
   ### Start the Build. ###
   echo "Starting the build...."
   packer build -force \
-      -var "vm_clone_name=$3" \
+      -var "vm_clone_name=$4" \
+      -var "vm_os_name=$3" \
       -var-file="$CONFIG_PATH/build.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/common.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/linux-storage.pkrvars.hcl" \
@@ -600,6 +600,7 @@ menu_cloud_image() {
   echo "      Linux Distribution:"
   echo ""
   echo "       1 -  Alpine Cloud Image 3.21.2"
+  echo "       2 -  Ubuntu Cloud Image 24.04.2"
   echo ""
   echo "      Other:"
   echo ""
@@ -613,9 +614,15 @@ menu_cloud_image() {
         if [ -z "$1" ]; then 
           menu_option_cloud_image "Alpine" "alpine/3.21.2" 
         else 
-          menu_option_template $1 $2 "linux-alpine-3.21.2" 
+          menu_option_template $1 $2 "alpine" "linux-alpine-3.21.2" 
         fi
-        press_enter 
+        ;;
+    2 ) clear
+        if [ -z "$1" ]; then 
+          menu_option_cloud_image "Ubuntu" "ubuntu/24.04.2" 
+        else 
+          menu_option_template $1 $2 "ubuntu" "linux-ubuntu-24.04-lts" 
+        fi
         ;;
     [Ii] ) clear ; info ;;
     [Qq] ) clear ; exit ;;

@@ -7,3 +7,5 @@
     - [x] Remove Packer User
 - [ ] Download cloud-init, cloud-init-output logs
 - [ ] Vault SSH Helper
+    - [ ] Ubuntu image: check /etc/pam.d/sshd file to see what should be commented
+    - [ ] Problem with network when I set network-config

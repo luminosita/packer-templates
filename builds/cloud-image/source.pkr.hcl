@@ -1,3 +1,6 @@
+//  BLOCK: locals
+//  Defines the local variables.
+
 locals {
   bios_boot_command = [
     "c<wait5>",
@@ -49,7 +52,7 @@ data "git-repository" "cwd" {}
 //  BLOCK: source
 //  Defines the builder configuration blocks.
 
-source "proxmox-iso" "alpine" {
+source "proxmox-iso" "cloud-image" {
  
   // Proxmox Connection Settings and Credentials
   proxmox_url              = "https://${var.proxmox_hostname}:8006/api2/json"
@@ -83,11 +86,6 @@ source "proxmox-iso" "alpine" {
       pre_enrolled_keys = var.vm_bios == "ovmf" ? var.vm_efi_pre_enrolled_keys : null
     }
   }
-//  ssh_username    = "${var.build_username}"
-  ssh_username    = "root"  #System Rescue CD has only root username option
-  ssh_password    = "${var.build_password}"
-  ssh_timeout     = "${var.timeout}"
-  ssh_port        = "22"
 
   boot_iso {
     iso_file            = "${var.common_iso_storage}:${var.iso_path}/${var.iso_file}"
@@ -95,6 +93,12 @@ source "proxmox-iso" "alpine" {
     unmount             = true
     keep_cdrom_device   = false
   }
+
+//  ssh_username    = "${var.build_username}"
+  ssh_username    = "root"  #System Rescue CD has only root username option
+  ssh_password    = "${var.build_password}"
+  ssh_timeout     = "${var.timeout}"
+  ssh_port        = "22"
 
   boot              = var.vm_boot
   boot_wait         = var.vm_boot_wait

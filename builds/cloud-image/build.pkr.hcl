@@ -1,28 +1,6 @@
-/*
-    DESCRIPTION:
-    Alpine Cloud Image template using the Packer Builder for Proxmox (proxmox-iso).
-*/
-
-//  BLOCK: packer
-//  The Packer configuration.
-
-packer {
-  required_version = ">= 1.9.1"
-  required_plugins {
-    git = {
-      version = ">= 0.4.2"
-      source  = "github.com/ethanmdavidson/git"
-    }
-    proxmox = {
-      version = ">= 1.2.2"
-      source  = "github.com/hashicorp/proxmox"
-    }
-  }
-}
-
 # Build Definition to create the VM Template
 build {
-  sources = ["source.proxmox-iso.alpine"]
+  sources = ["source.proxmox-iso.cloud-image"]
 
   provisioner "shell" {
     inline = [

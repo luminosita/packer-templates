@@ -74,13 +74,12 @@ write_files:
     vault_config_folder=/etc/vault.d
     vault_config_file="$vault_config_folder/vault.hcl"
     vault_data_folder=/var/lib/vault
-    service_file="/etc/init.d/vault"
-    pidfile="/run/vault/vault.pid"
     mkdir -p $vault_config_folder
     mkdir -p $vault_data_folder
     chown $user:$group $vault_config_folder
     chown $user:$group $vault_data_folder
     setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
+    setcap cap_ipc_lock=+ep $(readlink -f $(which vault-ssh-helper))
   path: "/root/install_vault.sh"
   owner: "root:root"
   permissions: "0755"

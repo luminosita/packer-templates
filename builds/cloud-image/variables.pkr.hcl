@@ -1,13 +1,3 @@
-/*
-    DESCRIPTION:
-    Ubuntu Server 24.04 LTS variables using the Packer Builder for Proxmox (proxmox-iso).
-*/
-
-//  BLOCK: variable
-//  Defines the input variables.
-
-// Proxmox Credentials
-
 variable "proxmox_hostname" {
   type        = string
   description = "The FQDN or IP address of a Proxmox node. Only one node should be specified in a cluster."
@@ -37,33 +27,79 @@ variable "proxmox_node" {
   description = "The name of the Proxmox node that Packer will build templates on."
 }
 
-// Vault Settings
-
-variable "vault_api_url" {
-  type    = string
-  description = "The Vault API url."
-}
-
-variable "vault_api_cert_file" {
-  type    = string
-  description = "The Vault API file path to TLS certificate."
-}
-
 // Virtual Machine Settings
 
-variable "vm_clone_name" {
+variable "vm_os_language" {
   type        = string
-  description = "The guest VM to be cloned."
+  description = "The guest operating system language."
+  default     = "en_US"
 }
 
-variable "vm_name" {
+variable "vm_os_keyboard" {
   type        = string
-  description = "The guest VM name."
+  description = "The guest operating system keyboard layout."
+  default     = "us"
+}
+
+variable "vm_os_timezone" {
+  type        = string
+  description = "The guest operating system timezone."
+  default     = "UTC"
+}
+
+variable "vm_os_family" {
+  type        = string
+  description = "The guest operating system family. Used for naming. (e.g. 'linux')"
 }
 
 variable "vm_os_name" {
   type        = string
   description = "The guest operating system name. Used for naming. (e.g. 'ubuntu')"
+}
+
+variable "vm_os_version" {
+  type        = string
+  description = "The guest operating system version. Used for naming. (e.g. '22-04-lts')"
+}
+
+variable "vm_os_type" {
+  type        = string
+  description = "The guest operating system type. (e.g. 'l26')"
+}
+
+variable "vm_bios" {
+  type        = string
+  description = "The firmware type. Allowed values 'ovmf' or 'seabios'"
+  default     = "ovmf"
+
+  validation {
+    condition     = contains(["ovmf", "seabios"], var.vm_bios)
+    error_message = "The vm_bios value must be 'ovmf' or 'seabios'."
+  }
+}
+
+variable "vm_firmware_path" {
+  type        = string
+  description = "The firmware file to be used. Needed for EFI"
+  default     = "/usr/share/ovmf/OVMF.fd"
+}
+
+variable "vm_efi_storage_pool" {
+  type        = string
+  description = "Set the UEFI disk storage location. (e.g. 'local-lvm')"
+  default     = "local-lvm"
+}
+
+variable "vm_efi_type" {
+  type        = string
+  description = "Specifies the version of the OVMF firmware to be used. (e.g. '4m')"
+  default     = "4m"
+}
+
+variable "vm_efi_pre_enrolled_keys" {
+  type        = bool
+  description = "Whether Microsoft Standard Secure Boot keys should be pre-loaded on the EFI disk. (e.g. false)"
+  default     = false
 }
 
 variable "vm_cpu_count" {
@@ -74,6 +110,11 @@ variable "vm_cpu_count" {
 variable "vm_cpu_sockets" {
   type        = number
   description = "The number of virtual CPU sockets. (e.g. '1')"
+}
+
+variable "vm_cpu_type" {
+  type        = string
+  description = "The CPU type to emulate. See the Proxmox API documentation for the complete list of accepted values. For best performance, set this to host. Defaults to kvm64."
 }
 
 variable "vm_mem_size" {
@@ -89,6 +130,21 @@ variable "vm_disk_controller_type" {
 variable "vm_disk_type" {
   type        = string
   description = "The type of disk to emulate. (e.g. 'virtio')"
+}
+
+variable "vm_storage_pool" {
+  type        = string
+  description = "The name of the Proxmox storage pool to store the VM template. (e.g. 'local-lvm')"
+}
+
+variable "vm_disk_size" {
+  type        = string
+  description = "The size for the virtual disk in GB. (e.g. '32G')"
+}
+
+variable "vm_disk_format" {
+  type        = string
+  description = "The format of the file backing the disk. (e.g. 'qcow2')"
 }
 
 variable "vm_network_card_model" {
@@ -112,6 +168,33 @@ variable "vm_cloudinit" {
   type        = bool
   description = "Enable or disable cloud-init drive in Proxmox. (e.g. false)"
   default     = false
+}
+
+// Removable Media Settings
+
+variable "common_iso_storage" {
+  type        = string
+  description = "The name of the source Proxmox storage location for ISO images. (e.g. 'local-lvm')"
+}
+
+variable "iso_path" {
+  type        = string
+  description = "The path on the source Proxmox storage location for ISO images. (e.g. 'iso')"
+}
+
+variable "iso_file" {
+  type        = string
+  description = "The file name of the ISO image used by the vendor. (e.g. 'ubuntu-<version>-live-server-amd64.iso')"
+}
+
+variable "iso_checksum" {
+  type        = string
+  description = "The checksum value of the ISO image provided by the vendor."
+}
+
+variable "cloud_image_url" {
+  type = string
+  description = "Cloud image url to deploy"
 }
 
 // Boot Settings
@@ -165,12 +248,6 @@ variable "build_username" {
 #  sensitive   = true  
 }
 
-variable "build_ssh_private_key_file" {
-  type        = string
-  description = "The SSH private key file."
-#  sensitive   = true
-}
-
 variable "build_password" {
   type        = string
   description = "The password to login to the guest operating system."
@@ -200,4 +277,12 @@ variable "common_hcp_packer_registry_enabled" {
   type        = bool
   description = "Enable the HCP Packer registry."
   default     = false
+}
+
+// Additional Settings
+
+variable "additional_packages" {
+  type        = list(string)
+  description = "Additional packages to install."
+  default     = []
 }
