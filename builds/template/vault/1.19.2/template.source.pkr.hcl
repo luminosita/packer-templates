@@ -5,17 +5,23 @@ locals {
   build_description = "Version: ${local.build_version}\nBase OS: ${var.vm_clone_name}\nBuilt on: ${local.build_date}\n${local.build_by}\nCloud-Init: ${var.vm_cloudinit}"
   vm_disk_type      = var.vm_disk_type == "virtio" ? "vda" : "sda"
   data_source_content = {
-    "/meta-data" = file("${abspath(path.root)}/data/meta-data")
-    "/user-data" = templatefile("${abspath(path.root)}/data/user-data.pkrtpl.hcl", {
+    "/meta-data"               = file("${abspath(path.root)}/data/meta-data")
+    "/user-data"               = templatefile("${abspath(path.root)}/data/user-data.${var.vm_os_name}.pkrtpl.hcl", {
       vault_api_url            = var.vault_api_url
       build_username           = var.build_username
       build_password           = var.build_password
       build_password_encrypted = var.build_password_encrypted
       vm_disk_type             = local.vm_disk_type
     })
+    "/network-config"          = templatefile("${abspath(path.root)}/data/network.pkrtpl.hcl", {
+        device                 = var.vm_network_device
+        ip                     = var.vm_ip_address
+        netmask                = var.vm_ip_netmask
+        gateway                = var.vm_ip_gateway
+        dns                    = var.vm_dns_list
+    })
   }
 
-  data_source_command = var.common_data_source == "http" ? "ds=\"nocloud-net;seedfrom=http://{{.HTTPIP}}:{{.HTTPPort}}/\"" : "nofirewall rootpass=${var.build_password}"
   vm_name = "${var.vm_name}"
 }
 
@@ -27,7 +33,7 @@ data "git-repository" "cwd" {}
 //  BLOCK: source
 //  Defines the builder configuration blocks.
 
-source "proxmox-clone" "alpine" {
+source "proxmox-clone" "template" {
  
   // Proxmox Connection Settings and Credentials
   proxmox_url              = "https://${var.proxmox_hostname}:8006/api2/json"

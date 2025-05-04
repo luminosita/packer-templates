@@ -20,3 +20,5 @@ manifests/*.json
 **/*.p7b
 ## Ignore public key files
 **/*.pub
+
+output

@@ -28,7 +28,21 @@ locals {
 
 # Build Definition to create the VM Template
 build {
-  sources = ["source.proxmox-clone.alpine"]
+  sources = ["source.proxmox-clone.template"]
+
+  provisioner "shell" {
+    inline = [
+      "sudo cp /var/log/cloud-init.log ~/",
+      "sudo cp /var/log/cloud-init-output.log ~/",
+      "sudo chown ${var.build_username}:${var.build_username} ~/*"
+    ]
+  }
+
+  provisioner "file" {
+    direction="download"
+    sources=[ "./cloud-init.log", "./cloud-init-output.log" ]
+    destination="./output/"
+  }
 
   provisioner "file" {
     source=var.vault_api_cert_file
@@ -59,7 +73,6 @@ build {
       common_data_source       = "${var.common_data_source}"
       vm_cpu_sockets           = "${var.vm_cpu_sockets}"
       vm_cpu_count             = "${var.vm_cpu_count}"
-#      vm_disk_size             = "${var.vm_disk_size}"
       vm_mem_size              = "${var.vm_mem_size}"
       vm_network_card_model    = "${var.vm_network_card_model}"
       vm_cloudinit             = "${var.vm_cloudinit}"
