@@ -1,8 +1,3 @@
-/*
-    DESCRIPTION:
-    Ubuntu Server 24.04 LTS template using the Packer Builder for Proxmox (proxmox-iso).
-*/
-
 //  BLOCK: packer
 //  The Packer configuration.
 
@@ -12,6 +7,10 @@ packer {
     git = {
       version = ">= 0.4.2"
       source  = "github.com/ethanmdavidson/git"
+    }
+    password = {
+      version = ">= 0.1.0"
+      source  = "github.com/alexp-computematrix/password"
     }
     proxmox = {
       version = ">= 1.2.2"
@@ -24,6 +23,8 @@ locals {
   manifest_date     = formatdate("YYYY-MM-DD hh:mm:ss", timestamp())
   manifest_path     = "${path.cwd}/manifests/"
   manifest_output   = "${local.manifest_path}${local.manifest_date}.json"
+
+  script_root       = "${abspath(path.root)}/../../../../scripts"
 }
 
 # Build Definition to create the VM Template
@@ -49,16 +50,20 @@ build {
     destination="./vault.crt"
   }
 
+  provisioner "file" {
+    sources= [ 
+      "${local.script_root}/hashicorp/hc_install_product.sh", 
+      "${local.script_root}/hashicorp/hc_vault_ssh_helper.sh", 
+      "${local.script_root}/cleanup.sh" 
+    ]
+    destination="./"
+  }
+
   provisioner "shell" {
     inline = [
-      "echo 'Upload Vault TLS certificate'",
-      "sudo mv ./vault.crt /etc/vault-ssh-helper.d/vault.crt",
-      "sudo chown root:root /etc/vault-ssh-helper.d/vault.crt",
-      "echo 'Performing cleanup ...'",
-      "rm .ssh/authorized_keys",
-      "sudo usermod -L packer",
-      "sudo passwd -d packer"
-    ]
+      "bash ./hc_vault_ssh_helper.sh", 
+      "bash ./cleanup.sh" 
+    ]    
   }
 
   post-processor "manifest" {

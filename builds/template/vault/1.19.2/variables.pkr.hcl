@@ -1,8 +1,3 @@
-/*
-    DESCRIPTION:
-    Ubuntu Server 24.04 LTS variables using the Packer Builder for Proxmox (proxmox-iso).
-*/
-
 //  BLOCK: variable
 //  Defines the input variables.
 
@@ -163,6 +158,18 @@ variable "build_username" {
   type        = string
   description = "The username to login to the guest operating system. (e.g. 'ubuntu')"
 #  sensitive   = true  
+}
+
+variable "build_ssh_public_key_file" {
+  type        = string
+  description = "The SSH public key file."
+#  sensitive   = true
+}
+
+variable "default_ssh_public_key_file" {
+  type        = string
+  description = "The SSH public key file."
+#  sensitive   = true
 }
 
 variable "build_ssh_private_key_file" {

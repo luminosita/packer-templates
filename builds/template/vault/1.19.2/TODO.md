@@ -5,11 +5,15 @@
 - [x] Run Vault install script in cloud-init
 - [ ] Cleanup 
     - [x] Remove Packer User
-- [ ] Download cloud-init, cloud-init-output logs
+- [x] Download cloud-init, cloud-init-output logs
 - [ ] Vault SSH Helper
-    - [ ] Ubuntu image: check /etc/pam.d/sshd file to see what should be commented
-    - [ ] Problem with network when I set network-config
-    - [ ] Arrange cloud-init files
+    - [x] Ubuntu image: check /etc/pam.d/sshd file to see what should be commented
+    - [ ] Alpine image
+    - [ ] Proxmox
+    - [ ] OPNSense Router
+    - [ ] Mikrotik
+- [x] Problem with network when I set network-config
+- [x] Arrange cloud-init files
 - [ ] Cloud images
     - [ ] Download cloud image to ISO storage (reduce RAM requirement for SystemRescue image)
     - [ ] Stream file from storage directly to dd
@@ -20,6 +24,16 @@
         ssh user@otherhost cat raw-image-elsewhere | nbdcopy -- - [ qemu-nbd -f qcow2 local.qcow2 ]
         ```
 
-- [ ] Externalize instance install scripts (Hashicorp script ..., )
-    - [ ] Download scripts with data source
-- [ ] Cloud init Ubuntu error in logs
+- [x] Externalize instance install scripts (Hashicorp script ..., )
+- [x] Cloud init Ubuntu error in logs
+- [ ] Delete SSHD keys
+- [ ] Disable public keys from cloud-init
+- [ ] Backup ssh public key for root / default user
+
+- [ ] Cloud images
+    - [ ] Debian + Cloud init
+    - [ ] GNS3
+    - [ ] OPNSense + Config patch + Config apply
+    - [ ] Talos
+    - [ ] Mikrotik
+

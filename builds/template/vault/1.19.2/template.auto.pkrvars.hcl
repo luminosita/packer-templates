@@ -1,8 +1,3 @@
-/*
-    DESCRIPTION:
-    Ubuntu Server 24.04 LTS variables used by the Packer Plugin for Proxmox (proxmox-iso).
-*/
-
 // Virtual Machine Guest Operating System Setting
 vm_name          = "vault-1.19.2"
 vm_cloudinit     = false

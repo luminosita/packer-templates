@@ -472,7 +472,7 @@ menu_option_cloud_image() {
 
   ### Start the Build. ###
   echo "Starting the build...."
-  packer build -force \
+  packer build \
       -var-file="$CONFIG_PATH/build.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/common.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/linux-storage.pkrvars.hcl" \
@@ -502,7 +502,7 @@ menu_option_template() {
 
   ### Start the Build. ###
   echo "Starting the build...."
-  packer build -force \
+  packer build \
       -var "vm_clone_name=$4" \
       -var "vm_os_name=$3" \
       -var-file="$CONFIG_PATH/build.pkrvars.hcl" \
@@ -616,6 +616,7 @@ menu_cloud_image() {
         else 
           menu_option_template $1 $2 "alpine" "linux-alpine-3.21.2" 
         fi
+        press_enter
         ;;
     2 ) clear
         if [ -z "$1" ]; then 
@@ -623,6 +624,7 @@ menu_cloud_image() {
         else 
           menu_option_template $1 $2 "ubuntu" "linux-ubuntu-24.04-lts" 
         fi
+        press_enter
         ;;
     [Ii] ) clear ; info ;;
     [Qq] ) clear ; exit ;;
@@ -668,8 +670,8 @@ main_menu() {
   echo ""
   case $selection in
     1 ) clear ; menu_iso  ; press_enter ;;
-    2 ) clear ; menu_cloud_image  ; press_enter ;;
-    3 ) clear ; menu_template  ; press_enter ;;
+    2 ) clear ; menu_cloud_image ;;
+    3 ) clear ; menu_template ;;
     [Ii] ) clear ; info ; press_enter ;;
     [Qq] ) clear ; exit ;;
     * ) clear ; incorrect_selection ; press_enter ;;

@@ -6,12 +6,18 @@ locals {
   vm_disk_type      = var.vm_disk_type == "virtio" ? "vda" : "sda"
   data_source_content = {
     "/meta-data"               = file("${abspath(path.root)}/data/meta-data")
-    "/user-data"               = templatefile("${abspath(path.root)}/data/user-data.${var.vm_os_name}.pkrtpl.hcl", {
+    "/user-data"               = templatefile("${abspath(path.root)}/data/user-data.pkrtpl.hcl", {
       vault_api_url            = var.vault_api_url
       build_username           = var.build_username
       build_password           = var.build_password
       build_password_encrypted = var.build_password_encrypted
+      build_ssh_key            = file(var.build_ssh_public_key_file)
+      username                 = "vault"
       vm_disk_type             = local.vm_disk_type
+      random_pass              = data.password.random_pass.crypt
+      default_ssh_key          = file(var.default_ssh_public_key_file)
+      packages                 = file("${abspath(path.root)}/data/packages.${var.vm_os_name}.hcl")
+      run_commands             = file("${abspath(path.root)}/data/run-commands.${var.vm_os_name}.hcl")
     })
     "/network-config"          = templatefile("${abspath(path.root)}/data/network.pkrtpl.hcl", {
         device                 = var.vm_network_device
@@ -22,14 +28,14 @@ locals {
     })
   }
 
-  vm_name = "${var.vm_name}"
+  vm_name = "${var.vm_name}-${var.vm_os_name}"
 }
 
 //  BLOCK: data
 //  Defines the data sources.
 
 data "git-repository" "cwd" {}
-
+data "password" "random_pass" {}
 //  BLOCK: source
 //  Defines the builder configuration blocks.
 

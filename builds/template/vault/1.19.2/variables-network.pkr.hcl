@@ -1,8 +1,3 @@
-/*
-    DESCRIPTION:
-    Ubuntu 24.04 LTS network variables used by the Packer Plugin for Proxmox (proxmox-iso).
-*/
-
 // VM Network Settings
 
 variable "vm_network_device" {

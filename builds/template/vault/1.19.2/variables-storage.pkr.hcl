@@ -1,8 +1,3 @@
-/*
-    DESCRIPTION:
-    Ubuntu Server 24.04 LTS storage variables used by the Packer Plugin for Proxmox (proxmox-iso).
-*/
-
 // VM Storage Settings
 
 variable "vm_disk_device" {
