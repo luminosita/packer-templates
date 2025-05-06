@@ -121,15 +121,33 @@ variable "vm_ca_user_public_key_file" {
 #  sensitive   = true
 }
 
+variable "vm_certs" {
+  type        = list(string)
+  description = "The certificates to be uploaded."
+#  sensitive   = true
+}
+
 variable "vm_scripts" {
   type        = list(string)
   description = "The scripts to be uploaded."
 #  sensitive   = true
 }
 
-variable "vm_runs" {
+variable "vm_runscripts" {
   type        = list(string)
   description = "The scripts to be executed."
+#  sensitive   = true
+}
+
+variable "vm_ci_packages" {
+  type        = map(list(string))
+  description = "Cloud-init additional packages."
+#  sensitive   = true
+}
+
+variable "vm_ci_runcmds" {
+  type        = map(list(string))
+  description = "Cloud-init additional run commands."
 #  sensitive   = true
 }
 

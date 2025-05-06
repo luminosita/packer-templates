@@ -1,1 +1,0 @@
-- rc-update add qemu-guest-agent

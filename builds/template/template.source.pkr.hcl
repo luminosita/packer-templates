@@ -13,9 +13,9 @@ locals {
       username                 = var.vm_default_username
       vm_disk_type             = local.vm_disk_type
       random_pass              = data.password.random_pass.crypt
-      packages                 = file("${abspath(path.root)}/data/packages.${var.vm_os_name}.hcl")
-      run_commands             = file("${abspath(path.root)}/data/run-commands.${var.vm_os_name}.hcl")
-      write_files              = file("${abspath(path.root)}/data/files.${var.vm_os_name}.hcl")
+      packages                 = join("\n", var.vm_ci_packages[var.vm_os_name])
+      run_commands             = join("\n", var.vm_ci_runcmds[var.vm_os_name])
+      write_files              = fileexists("${abspath(path.root)}/data/files.hcl") ? file("${abspath(path.root)}/data/files.hcl") : file("${abspath(path.root)}/data/files.${var.vm_os_name}.hcl")
     })
     "/network-config"          = templatefile("${abspath(path.root)}/data/network.pkrtpl.hcl", {
         device                 = var.vm_network_device[var.vm_os_name]
@@ -36,6 +36,11 @@ data "git-repository" "cwd" {}
 data "password" "random_pass" {}
 //  BLOCK: source
 //  Defines the builder configuration blocks.
+
+source "file" "test" {
+  content =  local.data_source_content["/user-data"]
+  target =  "output/config.yaml"
+}
 
 source "proxmox-clone" "template" {
  
@@ -71,7 +76,7 @@ source "proxmox-clone" "template" {
   }
 
   // Removable Media Settings
-  http_content = var.common_data_source == "http" ? "${local.data_source_content}" : null
+  http_content = var.common_data_source == "http" ? local.data_source_content : null
 
   // Boot and Provisioning Settings
   http_bind_address = var.common_data_source == "http" ? var.common_http_bind_address : null
@@ -87,18 +92,18 @@ source "proxmox-clone" "template" {
       cd_content = var.common_data_source == "disk" ? local.data_source_content : null
       cd_label = var.common_data_source == "disk" ? "cidata" : null
       iso_storage_pool = var.common_data_source == "disk" ? "local" : null
-      type = "${var.vm_disk_type}"
+      type = var.vm_disk_type
       unmount             = true
       keep_cdrom_device   = false
     }
   }
 
-  template_name        = "${local.vm_name}"
-  template_description = "${local.build_description}"
+  template_name        = local.vm_name
+  template_description = local.build_description
 
   # VM Cloud Init Settings
   cloud_init              = var.vm_cloudinit
   cloud_init_storage_pool = var.vm_cloudinit == true ? var.vm_storage_pool : null
-  cloud_init_disk_type    = var.vm_cloudinit == true ? "${var.vm_disk_type}" : null
+  cloud_init_disk_type    = var.vm_cloudinit == true ? var.vm_disk_type : null
 }
 

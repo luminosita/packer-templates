@@ -3,7 +3,7 @@
 - [x] Memory final?
 - [x] Random VM id scope
 - [x] Run Vault install script in cloud-init
-- [ ] Cleanup 
+- [x] Cleanup 
     - [x] Remove Packer User
 - [x] Download cloud-init, cloud-init-output logs
 - [ ] Vault SSH Helper
@@ -12,9 +12,18 @@
     - [ ] Proxmox
     - [ ] OPNSense Router
     - [ ] Mikrotik
+    - [ ] Bug: vault ssh -mode=otp -role=otp-key-role IP=... (logout)
+        ```
+        URL: PUT https://172.16.20.11:8200/v1/sys/leases/revoke
+        Code: 403. Errors:
+
+        * 1 error occurred:
+        * permission denied
+        ```
 - [x] Problem with network when I set network-config
 - [x] Arrange cloud-init files
 - [ ] Cloud images
+    - [ ] Fix "disk is full" GNS3 issue
     - [ ] Download cloud image to ISO storage (reduce RAM requirement for SystemRescue image)
     - [ ] Stream file from storage directly to dd
         ```bash
@@ -27,35 +36,37 @@
 - [x] Allow password authentication. Final script should lock password authentication
 - [x] Externalize instance install scripts (Hashicorp script ..., )
 - [x] Cloud init Ubuntu error in logs
-- [ ] Delete SSHD keys
+- [x] Delete SSHD keys
     ```
     Any scripts in the scripts/per-boot directory on the datasource will be run every time the system boots. Scripts will be run in alphabetical order. This module does not accept any config keys.
     ```
 Internal name: cc_scripts_per_boot
 - [x] Disable public keys from cloud-init
 - [x] Delete build_password_encrypted
-- [ ] Trust CA Key SSH Authority (backup) instead of public SSH keys in .authorized_keys
+- [x] Trust CA Key SSH Authority (backup) instead of public SSH keys in .authorized_keys
 - [ ] apk / apt repository for vault-ssh-helper binary
 - [ ] IMPROTANT: Copy vault-ssh-helper for Alpine tempate image 
 
 - [ ] Cloud images/Templates
     - [x] Debian + Cloud init
     - [ ] Vault (service, config script)
+    - [ ] Vault HA
     - [x] GNS3
     - [ ] OPNSense + Config patch + Config apply
     - [ ] Talos
     - [ ] Mikrotik
+- [ ] Certificates
+    - [ ] CA certificates
+    - [ ] Server CA (intermediate) for Vault
+        - [ ] Client certificates for Vault instances
+    - [ ] CA SSH key
+    - [ ] Server CA (intermediate) for SSH CA Trust
+        - [ ] Client certificates for SSH login
+    - [ ] Store both CA to HCP Cloud
+- [ ] Cleanup unused variables
 
-- [ ] Fix "disk is full" GNS3 issue
 
-
-- Certificates
-    - CA
-    - Server CA (intermediate) for Vault
-        - Client certificates for Vault instances
-    - Server CA (intermediate) for SSH CA Trust
-        - Client certificates for SSH login
-
+vault write ssh/creds/otp-key-role ip=172.16.1.164
 
 # Vault SSH Helper (Alpine)
 

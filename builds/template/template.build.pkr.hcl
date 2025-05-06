@@ -25,12 +25,20 @@ locals {
   manifest_output   = "${local.manifest_path}${local.manifest_date}.json"
 
   script_root       = "${abspath(path.root)}/../../../../scripts"
+  certs_root       = "${abspath(path.root)}/../../../../certs"
+}
+
+build {
+  name = "test"
+  sources = ["sources.file.test"]
 }
 
 # Build Definition to create the VM Template
 build {
+  name = "template"
   sources = ["source.proxmox-clone.template"]
 
+  // Cloud-init logs
   provisioner "shell" {
     inline = [
       "sudo cp /var/log/cloud-init.log ~/",
@@ -39,37 +47,30 @@ build {
     ]
   }
 
+  // Cloud-init logs
   provisioner "file" {
     direction="download"
     sources=[ "./cloud-init.log", "./cloud-init-output.log" ]
     destination="./output/"
   }
 
+  // Upload certificates
   provisioner "file" {
-    source=var.vm_ca_user_public_key_file
-    destination="./ca_user_key.pub"
-  }
-
-  provisioner "file" {
-    source=var.vault_api_cert_file
-    destination="./vault.crt"
-  }
-
-  provisioner "file" {
-    sources = concat([ 
-      "${local.script_root}/hashicorp/hc_install_product.sh", 
-      "${local.script_root}/hashicorp/hc_vault_ssh_helper.sh", 
-      "${local.script_root}/final.sh" 
-    ], formatlist("${local.script_root}/%s", var.vm_scripts))
+    sources = formatlist("${local.certs_root}/%s", var.vm_certs)
 
     destination="./"
   }
 
+  // Upload scripts
+  provisioner "file" {
+    sources = formatlist("${local.script_root}/%s", var.vm_scripts)
+
+    destination="./"
+  }
+
+  // Run uploaded scripts
   provisioner "shell" {
-    inline = concat(var.vm_runs, [
-      "bash ./hc_vault_ssh_helper.sh", 
-      "bash ./final.sh" 
-    ])    
+    inline = var.vm_runscripts
   }
 
   post-processor "manifest" {

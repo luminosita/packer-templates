@@ -1,3 +1,8 @@
+# Certificates folder !!!!!!!
+CA cert
+Vault cert
+CA SSH pub key
+
 # Packer Examples for Proxmox
 
 ## Table of Contents
