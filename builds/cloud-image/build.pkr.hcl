@@ -7,7 +7,7 @@ build {
   sources = ["source.proxmox-iso.cloud-image"]
 
   provisioner "file" {
-    content=templatefile("${local.script_root}/${var.copy_cloud_img_script}", {
+    content=templatefile("${local.script_root}/${var.cloud_image_copy_script}", {
       cloud_image_url = var.cloud_image_url
     })
     destination="./copy_cloud_img.sh"
