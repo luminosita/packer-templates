@@ -14,3 +14,4 @@ sudo mkdir -p $vault_data_folder
 sudo chown $user:$group $vault_config_folder
 sudo chown $user:$group $vault_data_folder
 sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
+

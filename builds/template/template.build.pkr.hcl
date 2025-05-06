@@ -46,24 +46,30 @@ build {
   }
 
   provisioner "file" {
+    source=var.vm_ca_user_public_key_file
+    destination="./ca_user_key.pub"
+  }
+
+  provisioner "file" {
     source=var.vault_api_cert_file
     destination="./vault.crt"
   }
 
   provisioner "file" {
-    sources= [ 
+    sources = concat([ 
       "${local.script_root}/hashicorp/hc_install_product.sh", 
       "${local.script_root}/hashicorp/hc_vault_ssh_helper.sh", 
-      "${local.script_root}/cleanup.sh" 
-    ]
+      "${local.script_root}/final.sh" 
+    ], formatlist("${local.script_root}/%s", var.vm_scripts))
+
     destination="./"
   }
 
   provisioner "shell" {
-    inline = [
+    inline = concat(var.vm_runs, [
       "bash ./hc_vault_ssh_helper.sh", 
-      "bash ./cleanup.sh" 
-    ]    
+      "bash ./final.sh" 
+    ])    
   }
 
   post-processor "manifest" {

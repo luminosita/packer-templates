@@ -115,9 +115,21 @@ variable "vm_default_username" {
 #  sensitive   = true
 }
 
-variable "vm_default_ssh_public_key_file" {
+variable "vm_ca_user_public_key_file" {
   type        = string
   description = "The SSH public key file."
+#  sensitive   = true
+}
+
+variable "vm_scripts" {
+  type        = list(string)
+  description = "The scripts to be uploaded."
+#  sensitive   = true
+}
+
+variable "vm_runs" {
+  type        = list(string)
+  description = "The scripts to be executed."
 #  sensitive   = true
 }
 
@@ -181,12 +193,6 @@ variable "build_password" {
 variable "build_password_encrypted" {
   type        = string
   description = "The encrypted password to login to the guest operating system."
-#  sensitive   = true
-}
-
-variable "build_key" {
-  type        = string
-  description = "The SSH public key to login to the guest operating system."
 #  sensitive   = true
 }
 

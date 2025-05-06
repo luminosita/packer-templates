@@ -265,12 +265,6 @@ variable "build_password_encrypted" {
 #  sensitive   = true
 }
 
-variable "build_key" {
-  type        = string
-  description = "The SSH public key to login to the guest operating system."
-#  sensitive   = true
-}
-
 variable "timeout" {
   description = "not sure why I need so high a timeout but here we are"
   default = "90m"

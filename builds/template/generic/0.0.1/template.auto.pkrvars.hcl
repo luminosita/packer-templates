@@ -1,0 +1,1 @@
+../../template.auto.pkrvars.hcl

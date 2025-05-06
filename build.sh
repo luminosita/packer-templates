@@ -654,7 +654,8 @@ menu_template() {
   menu_header
   echo "      Options:"
   echo ""
-  echo "       1 -  Test"
+  echo "       1 -  Generic"
+  echo "       1 -  Vault 1.19.2"
   echo ""
   echo "      Other:"
   echo ""
@@ -664,7 +665,8 @@ menu_template() {
   read -r selection
   echo ""
   case $selection in
-    1 ) clear ; menu_cloud_image "Test" "test/0.0.1" ;;
+    1 ) clear ; menu_cloud_image "Generic" "generic/0.0.1" ;;
+    2 ) clear ; menu_cloud_image "Vault" "vault/1.19.2" ;;
     [Ii] ) clear ; info ;;
     [Qq] ) clear ; exit ;;
     * ) clear ; incorrect_selection ;;

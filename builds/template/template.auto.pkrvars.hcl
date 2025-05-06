@@ -1,6 +1,4 @@
 // Virtual Machine Guest Operating System Setting
-vm_name                 = "test-0.0.1"
-vm_default_username     = "test"
 vm_cloudinit            = false
 
 // Virtual Machine Hardware Settings
