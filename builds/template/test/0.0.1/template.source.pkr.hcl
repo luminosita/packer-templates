@@ -10,10 +10,10 @@ locals {
       vault_api_url            = var.vault_api_url
       build_username           = var.build_username
       build_password_encrypted = var.build_password_encrypted
-      username                 = "vault"
+      username                 = var.vm_default_username
       vm_disk_type             = local.vm_disk_type
       random_pass              = data.password.random_pass.crypt
-      default_ssh_key          = file(var.default_ssh_public_key_file)
+      default_ssh_key          = file(var.vm_default_ssh_public_key_file)
       packages                 = file("${abspath(path.root)}/data/packages.${var.vm_os_name}.hcl")
       run_commands             = file("${abspath(path.root)}/data/run-commands.${var.vm_os_name}.hcl")
     })

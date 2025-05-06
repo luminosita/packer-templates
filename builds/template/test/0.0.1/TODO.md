@@ -28,14 +28,14 @@
 - [x] Externalize instance install scripts (Hashicorp script ..., )
 - [x] Cloud init Ubuntu error in logs
 - [ ] Delete SSHD keys
-- [ ] Disable public keys from cloud-init
+- [x] Disable public keys from cloud-init
 - [x] Delete build_password_encrypted
-- [ ] Trust CA Key SSH Authority (backup)
+- [ ] Trust CA Key SSH Authority (backup) instead of public SSH keys in .authorized_keys
 - [ ] apk / apt repository for vault-ssh-helper binary
 - [ ] IMPROTANT: Copy vault-ssh-helper for Alpine tempate image 
 
 - [ ] Cloud images/Templates
-    - [ ] Debian + Cloud init
+    - [x] Debian + Cloud init
     - [ ] Vault
     - [ ] GNS3
     - [ ] OPNSense + Config patch + Config apply

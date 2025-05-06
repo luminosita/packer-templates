@@ -1,6 +1,7 @@
 // Virtual Machine Guest Operating System Setting
-vm_name          = "vault-1.19.2"
-vm_cloudinit     = false
+vm_name                 = "test-0.0.1"
+vm_default_username     = "test"
+vm_cloudinit            = false
 
 // Virtual Machine Hardware Settings
 vm_cpu_count            = 1

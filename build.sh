@@ -602,6 +602,7 @@ menu_cloud_image() {
   echo "       1 -  Alpine Cloud Image 3.21.2"
   echo "       2 -  Ubuntu Cloud Image 24.04-lts"
   echo "       3 -  Debian Cloud Image 12-latest"
+  echo "       4 -  GNS3 Cloud Image 3.0.4"
   echo ""
   echo "      Other:"
   echo ""
@@ -635,6 +636,14 @@ menu_cloud_image() {
         fi
         press_enter
         ;;
+    4 ) clear
+        if [ -z "$1" ]; then 
+          menu_option_cloud_image "GNS3" "gns3/3.0.4" 
+        else 
+          echo "Unsupported cloud image !!!"
+        fi
+        press_enter
+        ;;
     [Ii] ) clear ; info ;;
     [Qq] ) clear ; exit ;;
     * ) clear ; incorrect_selection ;;
@@ -645,7 +654,7 @@ menu_template() {
   menu_header
   echo "      Options:"
   echo ""
-  echo "       1 -  Vault 1.19.2"
+  echo "       1 -  Test"
   echo ""
   echo "      Other:"
   echo ""
@@ -655,7 +664,7 @@ menu_template() {
   read -r selection
   echo ""
   case $selection in
-    1 ) clear ; menu_cloud_image "Vault" "vault/1.19.2" ;;
+    1 ) clear ; menu_cloud_image "Test" "test/0.0.1" ;;
     [Ii] ) clear ; info ;;
     [Qq] ) clear ; exit ;;
     * ) clear ; incorrect_selection ;;

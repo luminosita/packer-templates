@@ -109,6 +109,18 @@ variable "vm_cloudinit" {
   default     = false
 }
 
+variable "vm_default_username" {
+  type        = string
+  description = "The default VM username."
+#  sensitive   = true
+}
+
+variable "vm_default_ssh_public_key_file" {
+  type        = string
+  description = "The SSH public key file."
+#  sensitive   = true
+}
+
 // Boot Settings
 
 variable "common_data_source" {
@@ -158,12 +170,6 @@ variable "build_username" {
   type        = string
   description = "The username to login to the guest operating system. (e.g. 'ubuntu')"
 #  sensitive   = true  
-}
-
-variable "default_ssh_public_key_file" {
-  type        = string
-  description = "The SSH public key file."
-#  sensitive   = true
 }
 
 variable "build_password" {
