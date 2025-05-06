@@ -9,9 +9,7 @@ locals {
     "/user-data"               = templatefile("${abspath(path.root)}/data/user-data.pkrtpl.hcl", {
       vault_api_url            = var.vault_api_url
       build_username           = var.build_username
-      build_password           = var.build_password
       build_password_encrypted = var.build_password_encrypted
-      build_ssh_key            = file(var.build_ssh_public_key_file)
       username                 = "vault"
       vm_disk_type             = local.vm_disk_type
       random_pass              = data.password.random_pass.crypt
@@ -20,7 +18,7 @@ locals {
       run_commands             = file("${abspath(path.root)}/data/run-commands.${var.vm_os_name}.hcl")
     })
     "/network-config"          = templatefile("${abspath(path.root)}/data/network.pkrtpl.hcl", {
-        device                 = var.vm_network_device
+        device                 = var.vm_network_device[var.vm_os_name]
         ip                     = var.vm_ip_address
         netmask                = var.vm_ip_netmask
         gateway                = var.vm_ip_gateway
@@ -49,7 +47,7 @@ source "proxmox-clone" "template" {
 
   communicator            = "ssh"
   ssh_username            = "${var.build_username}"
-  ssh_private_key_file    = "${var.build_ssh_private_key_file}"
+  ssh_password            = "${var.build_password}"
   ssh_timeout             = "${var.timeout}"
   ssh_port                = "22"
 

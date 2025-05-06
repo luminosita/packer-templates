@@ -138,7 +138,7 @@ variable "vm_storage_pool" {
 }
 
 variable "vm_disk_size" {
-  type        = string
+  type        = list(string)
   description = "The size for the virtual disk in GB. (e.g. '32G')"
 }
 
@@ -195,6 +195,11 @@ variable "iso_checksum" {
 variable "cloud_image_url" {
   type = string
   description = "Cloud image url to deploy"
+}
+
+variable "cloud_image_copy_script" {
+  type = string
+  description = "Cloud image copy script"
 }
 
 // Boot Settings
@@ -277,12 +282,4 @@ variable "common_hcp_packer_registry_enabled" {
   type        = bool
   description = "Enable the HCP Packer registry."
   default     = false
-}
-
-// Additional Settings
-
-variable "additional_packages" {
-  type        = list(string)
-  description = "Additional packages to install."
-  default     = []
 }

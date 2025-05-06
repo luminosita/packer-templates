@@ -600,7 +600,8 @@ menu_cloud_image() {
   echo "      Linux Distribution:"
   echo ""
   echo "       1 -  Alpine Cloud Image 3.21.2"
-  echo "       2 -  Ubuntu Cloud Image 24.04.2"
+  echo "       2 -  Ubuntu Cloud Image 24.04-lts"
+  echo "       3 -  Debian Cloud Image 12-latest"
   echo ""
   echo "      Other:"
   echo ""
@@ -620,9 +621,17 @@ menu_cloud_image() {
         ;;
     2 ) clear
         if [ -z "$1" ]; then 
-          menu_option_cloud_image "Ubuntu" "ubuntu/24.04.2" 
+          menu_option_cloud_image "Ubuntu" "ubuntu/24.04-lts" 
         else 
           menu_option_template $1 $2 "ubuntu" "linux-ubuntu-24.04-lts" 
+        fi
+        press_enter
+        ;;
+    3 ) clear
+        if [ -z "$1" ]; then 
+          menu_option_cloud_image "Debian" "debian/12-latest" 
+        else 
+          menu_option_template $1 $2 "debian" "linux-debian-12-latest" 
         fi
         press_enter
         ;;

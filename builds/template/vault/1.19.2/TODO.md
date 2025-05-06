@@ -8,7 +8,7 @@
 - [x] Download cloud-init, cloud-init-output logs
 - [ ] Vault SSH Helper
     - [x] Ubuntu image: check /etc/pam.d/sshd file to see what should be commented
-    - [ ] Alpine image
+    - [x] Alpine image with pam.d and vault-ssh-helper (look at alpine-vault.yaml and alpine.yaml)
     - [ ] Proxmox
     - [ ] OPNSense Router
     - [ ] Mikrotik
@@ -24,16 +24,49 @@
         ssh user@otherhost cat raw-image-elsewhere | nbdcopy -- - [ qemu-nbd -f qcow2 local.qcow2 ]
         ```
 
+- [x] Allow password authentication. Final script should lock password authentication
 - [x] Externalize instance install scripts (Hashicorp script ..., )
 - [x] Cloud init Ubuntu error in logs
 - [ ] Delete SSHD keys
 - [ ] Disable public keys from cloud-init
-- [ ] Backup ssh public key for root / default user
+- [x] Delete build_password_encrypted
+- [ ] Trust CA Key SSH Authority (backup)
+- [ ] apk / apt repository for vault-ssh-helper binary
+- [ ] IMPROTANT: Copy vault-ssh-helper for Alpine tempate image 
 
-- [ ] Cloud images
+- [ ] Cloud images/Templates
     - [ ] Debian + Cloud init
+    - [ ] Vault
     - [ ] GNS3
     - [ ] OPNSense + Config patch + Config apply
     - [ ] Talos
     - [ ] Mikrotik
 
+
+
+vault-ssh-helper (Alpine):
+
+### Install packages
+
+```bash
+$ apk add make gcc libc-dev git
+```
+
+### Install Go
+
+```bash
+$ wget https://go.dev/dl/go1.24.2.linux-amd64.tar.gz
+$ tar -C /usr/local -xzf go1.24.2.linux-amd64.tar.gz
+$ export PATH=$PATH:/usr/local/bin/go:~/go/bin
+```
+
+### Build Vault SSH Helper
+
+```bash
+$ git clone https://github.com/hashicorp/vault-ssh-helper.git
+$ cd vault-ssh-helper
+$ go install github.com/mitchellh/gox
+$ make
+```
+
+Library is located in `bin` folder

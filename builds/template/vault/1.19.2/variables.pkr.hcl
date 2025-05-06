@@ -160,21 +160,9 @@ variable "build_username" {
 #  sensitive   = true  
 }
 
-variable "build_ssh_public_key_file" {
-  type        = string
-  description = "The SSH public key file."
-#  sensitive   = true
-}
-
 variable "default_ssh_public_key_file" {
   type        = string
   description = "The SSH public key file."
-#  sensitive   = true
-}
-
-variable "build_ssh_private_key_file" {
-  type        = string
-  description = "The SSH private key file."
 #  sensitive   = true
 }
 

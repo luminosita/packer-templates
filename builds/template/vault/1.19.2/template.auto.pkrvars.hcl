@@ -3,7 +3,7 @@ vm_name          = "vault-1.19.2"
 vm_cloudinit     = false
 
 // Virtual Machine Hardware Settings
-vm_cpu_count            = 2
+vm_cpu_count            = 1
 vm_cpu_sockets          = 1
 vm_cpu_type             = "kvm64"
 vm_mem_size             = 1024

@@ -72,11 +72,15 @@ source "proxmox-iso" "cloud-image" {
   memory          = "${var.vm_mem_size}"
   os              = "${var.vm_os_type}"
   scsi_controller = "${var.vm_disk_controller_type}"
-  disks {
-    disk_size     = "${var.vm_disk_size}"
-    type          = "${var.vm_disk_type}"
-    storage_pool  = "${var.vm_storage_pool}"
-    format        = "${var.vm_disk_format}"
+
+  dynamic "disks" {
+    for_each = var.vm_disk_size
+    content {
+      disk_size     = disks.value
+      type          = "${var.vm_disk_type}"
+      storage_pool  = "${var.vm_storage_pool}"
+      format        = "${var.vm_disk_format}"
+    }
   }
   dynamic "efi_config" {
     for_each = var.vm_bios == "ovmf" ? [1] : []

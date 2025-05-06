@@ -1,9 +1,13 @@
 // VM Network Settings
 
 variable "vm_network_device" {
-  type        = string
+  type        = map(string)
   description = "The network device of the VM."
-  default     = "ens18"
+  default     = { 
+    ubuntu = "ens18"
+    debian = "ens18"
+    alpine = "eth0"
+  }
 }
 
 variable "vm_ip_address" {

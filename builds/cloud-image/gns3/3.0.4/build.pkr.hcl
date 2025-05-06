@@ -1,21 +1,13 @@
-locals {
-  script_root       = "${abspath(path.root)}/../../../../scripts"
-}
-
 # Build Definition to create the VM Template
 build {
   sources = ["source.proxmox-iso.cloud-image"]
 
-  provisioner "file" {
-    content=templatefile("${local.script_root}/${var.copy_cloud_img_script}", {
-      cloud_image_url = var.cloud_image_url
-    })
-    destination="./copy_cloud_img.sh"
-  }
-
   provisioner "shell" {
     inline = [
-      "bash ./copy_cloud_img.sh", 
+      "wget -O /tmp/image.qcow2 ${var.cloud_image_url}",
+      "qemu-img convert -f qcow2 -O raw /tmp/image.qcow2 /tmp/image.raw",
+      "pv /tmp/image.raw | dd of=/dev/sda bs=4M status=progress",
+      "sync",
     ]
   }
 

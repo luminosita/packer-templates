@@ -1,22 +1,17 @@
 #cloud-config
 package_update: true
 package_upgrade: true
-chpasswd:
-  expire: false
-password: ${random_pass}
-ssh_pwauth: false
-shell: /bin/bash
 users:
 - default
 - lock_passwd: false
   name: ${username}
-  password: ${random_pass}
+  passwd: ${random_pass}
   shell: /bin/bash
+  ssh_authorized_keys:  
+  - ${default_ssh_key}
 - lock_passwd: false
   name: ${build_username}      #Required for Packer
-  password: ${build_password_encrypted}
-  ssh_authorized_keys:  
-  - ${build_ssh_key}
+  passwd: ${build_password_encrypted}
 packages:
 - qemu-guest-agent
 - sudo
@@ -39,7 +34,7 @@ power_state:
 write_files:
 - content: |
     PermitRootLogin no
-    PasswordAuthentication no
+    PasswordAuthentication yes
     ChallengeResponseAuthentication yes
     UsePAM yes
   path: /etc/ssh/sshd_config.d/01-harden-ssh.conf
@@ -48,8 +43,8 @@ write_files:
     ${build_username} ALL=(ALL) NOPASSWD:ALL     #Required for Packer
   path: /etc/sudoers.d/cloudinit
 - content: |-
-    auth requisite pam_exec.so quiet expose_authtok log=/var/log/vault-ssh.log /usr/local/bin/vault-ssh-helper -config=/etc/vault-ssh-helper.d/config.hcl
-    auth optional pam_unix.so not_set_pass use_first_pass nodelay
+    auth sufficient pam_exec.so quiet expose_authtok log=/var/log/vault-ssh.log /usr/local/bin/vault-ssh-helper -config=/etc/vault-ssh-helper.d/config.hcl
+    auth optional pam_unix.so use_first_pass nodelay
   path: /etc/pam.d/vault-ssh-helper
   owner: "root:root"
   permissions: "0644"
