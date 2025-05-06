@@ -24,11 +24,6 @@ packages:
 ${packages}
 runcmd:
 ${run_commands}
-power_state:
-  delay: now
-  mode: reboot
-  message: Rebooting after cloud-init completion
-  condition: true
 write_files:
 - content: |
       #!/bin/bash
@@ -41,7 +36,7 @@ write_files:
         ssh-keygen -q -N "" -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key
         ssh-keygen -q -N "" -t ed25519 -f /etc/ssh/ssh_host_ed25519_key
       fi   
-  path: /var/lib/cloud/scripts/per-boot/ssh_host_keys.sh
+  path: /root/ssh_host_keys.sh
   permissions: "0755"
 - content: |
     PermitRootLogin no

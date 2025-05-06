@@ -26,7 +26,7 @@ vm_ci_packages = {
     debian = [ "- libcap2-bin" ]
 }
 vm_ci_runcmd  = {
-    alpine = [ "- rc-update add qemu-guest-agent" ]
+    alpine = [ "- rc-update add qemu-guest-agent", "- rc-service qemu-guest-agent start" ]
     ubuntu = [ "- systemctl daemon-reload" ]
     debian = [ "- systemctl daemon-reload" ]
 }

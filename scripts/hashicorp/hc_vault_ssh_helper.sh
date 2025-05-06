@@ -12,8 +12,6 @@ echo 'Installing Vault TLS certificate'
 sudo mv ./vault.crt /etc/vault-ssh-helper.d/vault.crt
 sudo chown root:root /etc/vault-ssh-helper.d/vault.crt
 
-sudo sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config.d/01-harden-ssh.conf
-
 os_name=$(cat /etc/os-release | grep -e "^ID=" | sed -e "s/ID=//")
 
 if [ $os_name == "ubuntu" ]; then
