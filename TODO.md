@@ -66,6 +66,9 @@ Internal name: cc_scripts_per_boot
 - [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "
 - [ ] Proxmox KSM
 - [ ] Move MD articles 
+- [ ] Update README with certificate login instructions
+- [ ] Update README with vault ssh login instructions
+- [ ] Instructions for each template after creation is done
 
 
 vault write ssh/creds/otp-key-role ip=172.16.1.164

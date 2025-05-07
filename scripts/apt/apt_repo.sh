@@ -12,8 +12,8 @@ do_hash() {
     HASH_NAME=$1
     HASH_CMD=$2
     echo "${HASH_NAME}:"
-    for f in $(find -type f); do
-        f=$(echo $f | cut -c3-) # remove ./ prefix
+    for f in $(find -H $dists_stable -type f); do
+        f=$(echo $f) # remove ./ prefix
         if [ "$f" = "Release" ]; then
             continue
         fi
@@ -22,14 +22,20 @@ do_hash() {
 }
 
 make_release_file() {
-    cat $DIR/apt_repo_info | tee $dists_stable_release > /dev/null
-    do_hash "MD5Sum" "md5sum" | tee -a $dists_stable_release > /dev/null
-    do_hash "SHA1" "sha1sum" | tee -a $dists_stable_release > /dev/null
-    do_hash "SHA256" "sha256sum" | tee -a $dists_stable_release > /dev/null
+    rm -f $dists_stable_release
+    rm -f $dists_stable_release_gpg
+    rm -f $dists_stable_inrelease
+
+    release_content=$(cat $apt_repo_dir/apt_repo_info)
+    release_content+=$(do_hash "MD5Sum" "md5sum")
+    release_content+=$(do_hash "SHA1" "sha1sum")
+    release_content+=$(do_hash "SHA256" "sha256sum")
+    
+    echo $release_content | tee $dists_stable_release > /dev/null
 }
 
 scan_packages() {
-    dpkg-scanpackages --arch amd64 $pool_dir > $dists_stable_binary_amd64/Packages
+    dpkg-scanpackages --arch amd64 $pool_dir/ > $dists_stable_binary_amd64/Packages
     cat $dists_stable_binary_amd64/Packages | gzip -9 > $dists_stable_binary_amd64/Packages.gz
 }
 
@@ -44,6 +50,20 @@ Expire-Date: 0
 %no-ask-passphrase
 %no-protection
 %commit
+EOF
+}
+
+create_apt_repo_info() {
+    tee $apt_repo_dir/apt_repo_info > /dev/null <<EOF
+Origin: Local Repository
+Label: Local
+Suite: stable
+Codename: stable
+Version: 1.0
+Architectures: amd64 arm64 arm7
+Components: main
+Description: An example software repository
+Date: $(date -Ru)
 EOF
 }
 
@@ -93,7 +113,7 @@ pool_main_dir=$pool_dir/main
 apt_repo_dir=$DIR/local/apt-repo
 dists_stable=$apt_repo_dir/dists/stable 
 dists_stable_release=$dists_stable/Release
-dists_stable_release_pgp=$dists_stable/Release.gpg
+dists_stable_release_gpg=$dists_stable/Release.gpg
 dists_stable_inrelease=$dists_stable/InRelease
 dists_stable_binary_amd64=$dists_stable/main/binary-amd64
 pgp_dir=$DIR/pgp
@@ -138,7 +158,7 @@ if [ $command == "init" ]; then
         ""
     sleep 2 # Added for human readability
 
-    if [ ! -z $pgp_dir ]; then 
+    if [ -d $pgp_dir ]; then 
         printf "\n%s" \
             "Removing old PGP folder" \
             ""
@@ -148,9 +168,18 @@ if [ $command == "init" ]; then
     fi
 
     printf "\n%s" \
+        "Creating apt repository info" \
+        ""
+    sleep 2 # Added for human readability
+
+    create_apt_repo_info
+
+    printf "\n%s" \
         "Creating apt repository folders" \
         ""
     sleep 2 # Added for human readability
+
+    create_apt_repo_info
 
     mkdir -p $pool_main_dir
     mkdir -p $dists_stable_binary_amd64
@@ -180,10 +209,9 @@ elif [ $command == "generate" ]; then
 
     scan_packages
     make_release_file
+    sign_release_file
 else
     echo "Unsupported command !!!"
 
     exit 1
 fi
-
-

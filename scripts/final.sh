@@ -16,4 +16,3 @@ sudo tee /var/spool/cron/crontabs/root <<EOF
 EOF
 
 sudo chmod 600 /var/spool/cron/crontabs/root
-
