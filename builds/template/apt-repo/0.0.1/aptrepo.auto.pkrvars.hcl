@@ -14,9 +14,9 @@ vm_runscripts   = [
 ]
 
 vm_ci_packages = {
-    alpine = [ "nginx" ]
-    ubuntu = [ "nginx" ]
-    debian = [ "cron", "nginx" ]
+    alpine = [ "nginx", "dpkg-dev" ]
+    ubuntu = [ "nginx", "dpkg-dev" ]
+    debian = [ "cron", "nginx", "dpkg-dev" ]
 }
 vm_ci_runcmds  = {
     alpine = [ "rc-update add qemu-guest-agent", "rc-service qemu-guest-agent start" ]

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -70,7 +70,7 @@ load_pgp_keyring() {
     export GNUPGHOME=$(cat $DIR/.gnupghome)
 }
 
-function usage {
+usage() {
 	# Display Help
 	echo "Create Apt Repository"
 	echo
@@ -133,14 +133,48 @@ if [ $command == "init" ]; then
     #     usage
     # fi
 
-    if [ ! -z $pgp_dir ]; then rm -rf $pgp_dir; fi
+    printf "\n%s" \
+        "Initializing apt repository" \
+        ""
+    sleep 2 # Added for human readability
+
+    if [ ! -z $pgp_dir ]; then 
+        printf "\n%s" \
+            "Removing old PGP folder" \
+            ""
+        sleep 2 # Added for human readability
+
+        rm -rf $pgp_dir
+    fi
+
+    printf "\n%s" \
+        "Creating apt repository folders" \
+        ""
+    sleep 2 # Added for human readability
 
     mkdir -p $pool_main_dir
     mkdir -p $dists_stable_binary_amd64
     mkdir -p $pgp_dir
 
+    printf "\n%s" \
+        "Creating PGP key info" \
+        ""
+    sleep 2 # Added for human readability
+
     create_pgp_key_info
+
+    printf "\n%s" \
+        "Creating PGP keyring" \
+        ""
+    sleep 2 # Added for human readability
+
     create_pgp_keyring
+
+    printf "\n%s" \
+        "Apt repository initialized. " \
+        "NOTE: Store $pgp/pgp-key.private securely." \
+        ""
+
 elif [ $command == "generate" ]; then
     load_pgp_keyring
 

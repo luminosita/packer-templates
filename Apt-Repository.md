@@ -109,7 +109,7 @@ First let’s look at an example of a Release file, which can be broken up into 
 And that’s it for what a  `Release`  file looks like. How hard could it be? let’s  [write some bash](https://earthly.dev/blog/understanding-bash). Just copy and paste the following in your terminal to get a copy of the script:
 
 ```
-echo '#!/bin/sh
+echo '#!/bin/bash
 set -e
 
 do_hash() {
