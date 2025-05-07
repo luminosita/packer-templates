@@ -19,7 +19,7 @@ vm_ci_packages = {
     debian = [ ]
 }
 vm_ci_runcmds  = {
-    alpine = [ "- rc-update add qemu-guest-agent", "- rc-service qemu-guest-agent start" ]
-    ubuntu = [ "- systemctl daemon-reload" ]
-    debian = [ "- systemctl daemon-reload" ]
+    alpine = [ "rc-update add qemu-guest-agent", "rc-service qemu-guest-agent start" ]
+    ubuntu = [ "systemctl daemon-reload", "systemctl start qemu-guest-agent" ]
+    debian = [ "systemctl daemon-reload", "systemctl start qemu-guest-agent" ]
 }

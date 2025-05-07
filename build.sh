@@ -616,7 +616,7 @@ menu_cloud_image() {
         if [ -z "$1" ]; then 
           menu_option_cloud_image "Alpine" "alpine/3.21.2" 
         else 
-          menu_option_template $1 $2 "alpine" "linux-alpine-3.21.2" 
+          menu_option_template "$1" "$2" "alpine" "linux-alpine-3.21.2" 
         fi
         press_enter
         ;;
@@ -624,7 +624,7 @@ menu_cloud_image() {
         if [ -z "$1" ]; then 
           menu_option_cloud_image "Ubuntu" "ubuntu/24.04-lts" 
         else 
-          menu_option_template $1 $2 "ubuntu" "linux-ubuntu-24.04-lts" 
+          menu_option_template "$1" "$2" "ubuntu" "linux-ubuntu-24.04-lts" 
         fi
         press_enter
         ;;
@@ -632,7 +632,7 @@ menu_cloud_image() {
         if [ -z "$1" ]; then 
           menu_option_cloud_image "Debian" "debian/12-latest" 
         else 
-          menu_option_template $1 $2 "debian" "linux-debian-12-latest" 
+          menu_option_template "$1" "$2" "debian" "linux-debian-12-latest" 
         fi
         press_enter
         ;;
@@ -656,7 +656,8 @@ menu_template() {
   echo ""
   echo "       1 -  Base"
   echo "       2 -  Generic"
-  echo "       3 -  Vault 1.19.2"
+  echo "       3 -  Apt Repository"
+  echo "       4 -  Vault 1.19.2"
   echo ""
   echo "      Other:"
   echo ""
@@ -668,7 +669,8 @@ menu_template() {
   case $selection in
     1 ) clear ; menu_cloud_image "Base" "base/0.0.1" ;;
     2 ) clear ; menu_cloud_image "Generic" "generic/0.0.1" ;;
-    3 ) clear ; menu_cloud_image "Vault" "vault/1.19.2" ;;
+    3 ) clear ; menu_cloud_image "Apt Repository" "apt-repo/0.0.1" ;;
+    4 ) clear ; menu_cloud_image "Vault" "vault/1.19.2" ;;
     [Ii] ) clear ; info ;;
     [Qq] ) clear ; exit ;;
     * ) clear ; incorrect_selection ;;

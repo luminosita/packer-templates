@@ -26,16 +26,7 @@ runcmd:
 ${run_commands}
 write_files:
 - content: |
-      #!/bin/bash
-      echo "SSH host key script"
-
-      if [ ! -f /etc/ssh/ssh_host_rsa_key ]; then
-        echo "Generating SSH host keys ..."
-
-        ssh-keygen -q -N "" -t rsa -b 4096 -f /etc/ssh/ssh_host_rsa_key
-        ssh-keygen -q -N "" -t ecdsa -f /etc/ssh/ssh_host_ecdsa_key
-        ssh-keygen -q -N "" -t ed25519 -f /etc/ssh/ssh_host_ed25519_key
-      fi   
+    ${indent(4, file(ssh_host_keys_script))} 
   path: /root/ssh_host_keys.sh
   permissions: "0755"
 - content: |

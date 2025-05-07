@@ -4,6 +4,7 @@ locals {
   build_version     = data.git-repository.cwd.head
   build_description = "Version: ${local.build_version}\nBase OS: ${var.vm_clone_name}\nBuilt on: ${local.build_date}\n${local.build_by}\nCloud-Init: ${var.vm_cloudinit}"
   vm_disk_type      = var.vm_disk_type == "virtio" ? "vda" : "sda"
+
   data_source_content = {
     "/meta-data"               = file("${abspath(path.root)}/data/meta-data")
     "/user-data"               = templatefile("${abspath(path.root)}/data/user-data.pkrtpl.hcl", {
@@ -13,9 +14,16 @@ locals {
       username                 = var.vm_default_username
       vm_disk_type             = local.vm_disk_type
       random_pass              = data.password.random_pass.crypt
-      packages                 = join("\n", var.vm_ci_packages[var.vm_os_name])
-      run_commands             = join("\n", var.vm_ci_runcmds[var.vm_os_name])
-      write_files              = fileexists("${abspath(path.root)}/data/files.hcl") ? file("${abspath(path.root)}/data/files.hcl") : file("${abspath(path.root)}/data/files.${var.vm_os_name}.hcl")
+      packages                 = join("\n", formatlist("- %s", var.vm_ci_packages[var.vm_os_name]))
+      run_commands             = join("\n", formatlist("- %s", var.vm_ci_runcmds[var.vm_os_name]))
+      ssh_host_keys_script     = "${local.script_root}/ssh_host_keys.sh"
+      write_files              = fileexists("${abspath(path.root)}/data/files.pkrtpl.hcl") ? templatefile("${abspath(path.root)}/data/files.pkrtpl.hcl", {
+        username                 = var.vm_default_username
+        custom_scripts           = formatlist("${local.script_root}/%s", var.vm_ci_scripts)
+      }) : templatefile("${abspath(path.root)}/data/files.${var.vm_os_name}.pkrtpl.hcl", {
+        username                 = var.vm_default_username
+        custom_scripts           = formatlist("${local.script_root}/%s", var.vm_ci_scripts)
+      })
     })
     "/network-config"          = templatefile("${abspath(path.root)}/data/network.pkrtpl.hcl", {
         device                 = var.vm_network_device[var.vm_os_name]

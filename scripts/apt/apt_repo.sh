@@ -1,0 +1,155 @@
+#!/bin/sh
+
+set -e
+
+DIR="$(pwd "$0")"
+logs_dir=$DIR/logs
+tmp_dir=$DIR/tmp
+
+LOG_FILE="$logs_dir/template_creation_$(date +'%Y%m%d_%H%M%S').log"
+
+do_hash() {
+    HASH_NAME=$1
+    HASH_CMD=$2
+    echo "${HASH_NAME}:"
+    for f in $(find -type f); do
+        f=$(echo $f | cut -c3-) # remove ./ prefix
+        if [ "$f" = "Release" ]; then
+            continue
+        fi
+        echo " $(${HASH_CMD} ${f}  | cut -d" " -f1) $(wc -c $f)"
+    done
+}
+
+make_release_file() {
+    cat $DIR/apt_repo_info | tee $dists_stable_release > /dev/null
+    do_hash "MD5Sum" "md5sum" | tee -a $dists_stable_release > /dev/null
+    do_hash "SHA1" "sha1sum" | tee -a $dists_stable_release > /dev/null
+    do_hash "SHA256" "sha256sum" | tee -a $dists_stable_release > /dev/null
+}
+
+scan_packages() {
+    dpkg-scanpackages --arch amd64 $pool_dir > $dists_stable_binary_amd64/Packages
+    cat $dists_stable_binary_amd64/Packages | gzip -9 > $dists_stable_binary_amd64/Packages.gz
+}
+
+create_pgp_key_info() {
+    tee $pgp_key_info > /dev/null <<EOF
+%echo Generating a local PGP key
+Key-Type: RSA
+Key-Length: 4096
+Name-Real: $pgp_key_name
+Name-Email: admin@kundun.dev
+Expire-Date: 0
+%no-ask-passphrase
+%no-protection
+%commit
+EOF
+}
+
+create_pgp_keyring() {
+    export GNUPGHOME="$(mktemp -d $pgp_dir/pgpkeys-XXXXXX)"
+
+    gpg --no-tty --batch --gen-key $pgp_key_info
+    gpg --armor --export $pgp_key_name > $pgp_dir/pgp-key.public
+    gpg --armor --export-secret-keys $pgp_key_name > $pgp_dir/pgp-key.private
+
+    gpg --no-default-keyring --keyring $tmp_dir/temp-keyring.gpg --import $pgp_dir/pgp-key.public
+    gpg --no-default-keyring --keyring $tmp_dir/temp-keyring.gpg --export --output $pgp_dir/pgp-key.gpg
+    rm $tmp_dir/temp-keyring.gpg*
+
+    echo $GNUPGHOME | tee $DIR/.gnupghome
+}
+
+sign_release_file() {
+    cat $dists_stable_release | gpg --default-key $pgp_key_name -abs > $dists_stable_release_gpg
+    cat $dists_stable_release | gpg --default-key $pgp_key_name -abs --clearsign > $dists_stable_inrelease
+}
+
+load_pgp_keyring() {
+    export GNUPGHOME=$(cat $DIR/.gnupghome)
+}
+
+function usage {
+	# Display Help
+	echo "Create Apt Repository"
+	echo
+	echo "Syntax: $script_name init|generate"
+	echo "Init options:"
+	echo "Generate options:"
+	echo " "
+
+    exit 1
+}
+
+# Function to log messages
+log() {
+  local timestamp=$(date +'[%Y-%m-%d %H:%M:%S]')
+  echo "$timestamp $1" | tee -a "$LOG_FILE"
+}
+
+pool_dir=$DIR/local/apt-repo/pool
+pool_main_dir=$pool_dir/main
+apt_repo_dir=$DIR/local/apt-repo
+dists_stable=$apt_repo_dir/dists/stable 
+dists_stable_release=$dists_stable/Release
+dists_stable_release_pgp=$dists_stable/Release.gpg
+dists_stable_inrelease=$dists_stable/InRelease
+dists_stable_binary_amd64=$dists_stable/main/binary-amd64
+pgp_dir=$DIR/pgp
+pgp_key_name="local_key"
+pgp_key_info=$pgp_dir/local_pgp_key.batch
+
+if [ -z "$1" ]; then usage; fi
+
+command=$1
+
+shift 1
+
+while getopts ":i:c:s:" o; do
+    case "${o}" in
+        i)
+            vm_id=${OPTARG}
+            # ((s == 45 || s == 90)) || usage
+            ;;
+        c)
+            config_file_path=${OPTARG}
+            ;;
+        s)
+            ssh_key_path=${OPTARG}
+            ;;
+        *)
+            usage
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+mkdir -p $DIR/logs
+mkdir -p $DIR/tmp
+
+if [ $command == "init" ]; then
+    # if [ -z "${vm_id}" ]; then
+    #     usage
+    # fi
+
+    if [ ! -z $pgp_dir ]; then rm -rf $pgp_dir; fi
+
+    mkdir -p $pool_main_dir
+    mkdir -p $dists_stable_binary_amd64
+    mkdir -p $pgp_dir
+
+    create_pgp_key_info
+    create_pgp_keyring
+elif [ $command == "generate" ]; then
+    load_pgp_keyring
+
+    scan_packages
+    make_release_file
+else
+    echo "Unsupported command !!!"
+
+    exit 1
+fi
+
+

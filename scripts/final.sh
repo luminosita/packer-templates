@@ -11,7 +11,7 @@ echo 'Deleting SSH host keys ...'
 sudo rm -f /etc/ssh/ssh_host_*
 
 echo 'Setting crontab for root user to recreate SSH host keys ...'
-sudo tee -a /var/spool/cron/crontabs/root <<EOF
+sudo tee /var/spool/cron/crontabs/root <<EOF
 @reboot /root/ssh_host_keys.sh
 EOF
 

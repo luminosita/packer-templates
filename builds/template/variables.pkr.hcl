@@ -112,43 +112,42 @@ variable "vm_cloudinit" {
 variable "vm_default_username" {
   type        = string
   description = "The default VM username."
-#  sensitive   = true
 }
 
 variable "vm_ca_user_public_key_file" {
   type        = string
   description = "The SSH public key file."
-#  sensitive   = true
 }
 
 variable "vm_certs" {
   type        = list(string)
   description = "The certificates to be uploaded."
-#  sensitive   = true
 }
 
 variable "vm_scripts" {
   type        = list(string)
   description = "The scripts to be uploaded."
-#  sensitive   = true
 }
 
 variable "vm_runscripts" {
   type        = list(string)
   description = "The scripts to be executed."
-#  sensitive   = true
 }
 
 variable "vm_ci_packages" {
   type        = map(list(string))
   description = "Cloud-init additional packages."
-#  sensitive   = true
 }
 
 variable "vm_ci_runcmds" {
   type        = map(list(string))
   description = "Cloud-init additional run commands."
-#  sensitive   = true
+}
+
+variable "vm_ci_scripts" {
+  type        = list(string)
+  description = "Cloud-init custom scripts."
+  default     = [ ] 
 }
 
 // Boot Settings

@@ -14,12 +14,7 @@ sudo chown root:root /etc/vault-ssh-helper.d/vault.crt
 
 os_name=$(cat /etc/os-release | grep -e "^ID=" | sed -e "s/ID=//")
 
-if [ $os_name == "ubuntu" ]; then
-   sudo sed -i "s/\@include common-auth/#\@include common-auth/" /etc/pam.d/sshd
-   sudo tee -a /etc/pam.d/sshd <<EOF
-@include vault-ssh-helper
-EOF
-elif [ $os_name == "debian" ]; then
+if [ $os_name == "ubuntu" ] || [ $os_name == "debian" ]; then
    sudo sed -i "s/\@include common-auth/#\@include common-auth/" /etc/pam.d/sshd
    sudo tee -a /etc/pam.d/sshd <<EOF
 @include vault-ssh-helper
