@@ -225,6 +225,4 @@ elif [ $command == "generate" ]; then
     sign_release_file
 else
     echo "Unsupported command !!!"
-
-    exit 1
 fi

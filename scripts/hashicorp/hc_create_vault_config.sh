@@ -1,4 +1,7 @@
-ip=`ip a show dev eth0 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'`
+#!/bin/bash
+
+#Hardcoded interface name "ens18" for Derbian/Ubuntu deployment
+ip=`ip a show dev ens18 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'`
 
 port=8200
 cport=8201
@@ -8,8 +11,8 @@ group=vault
 
 product=vault
 
-vault_config=/etc/vault.d
-vault_config_certs=/etc/vault.d/certs
+vault_config="/etc/vault.d"
+vault_config_certs="$vault_config/certs"
 vault_config_file="$vault_config/vault.hcl"
 vault_data_folder="/var/lib/vault"
 
@@ -23,9 +26,9 @@ function create_tls_peers {
             peers+=$(cat <<EOF
     retry_join {
         leader_api_addr             = "https://$peer:$port"
-        leader_ca_cert_file         = "$vault_config_certs/vault.cert.pem"
-        leader_client_cert_file     = "$vault_config_certs/vault-node.crt"
-        leader_client_key_file      = "$vault_config_certs/vault-node.key"
+        leader_ca_cert_file         = "$vault_config_certs/ca-chain.cert.pem"
+        leader_client_cert_file     = "$vault_config_certs/vault.lan.cert.pem"
+        leader_client_key_file      = "$vault_config_certs/vault.lan.key.pem"
     }
 EOF
             )
@@ -71,9 +74,9 @@ cluster_name            = "$cluster_name"
 listener "tcp" {
    address              = "0.0.0.0:$port"
    tls_disable          = false
-   tls_cert_file        = "$vault_config_certs/vault-node.crt"
-   tls_key_file         = "$vault_config_certs/vault-node.key"
-   tls_client_ca_file   = "$vault_config_certs/vault.cert.pem"
+   tls_cert_file        = "$vault_config_certs/vault.lan.cert.pem"
+   tls_key_file         = "$vault_config_certs/vault.lan.key.pem"
+   tls_client_ca_file   = "$vault_config_certs/ca-chain.cert.pem"
 #   tls_cipher_suites    = "TLS_TEST_128_GCM_SHA256,TLS_TEST_128_GCM_SHA256,TLS_TEST20_POLY1305,TLS_TEST_256_GCM_SHA384,TLS_TEST20_POLY1305,TLS_TEST_256_GCM_SHA384"
 }
 
@@ -117,36 +120,16 @@ $peers
 EOF
 }
 
-function copy_certs {
-    sudo mkdir -f $vault_config_certs
-    sudo cp ./vault-node.crt $vault_config_certs/
-    sudo cp ./vault-node.key $vault_config_certs/
-    sudo cp ./vault.cert.pem $vault_config_certs/
-
-    sudo chown -R $user:$group $vault_config
-}
-
 function usage {
 	# Display Help
 	echo "Create Vault configuration files"
 	echo
-	echo "Syntax: $script_name create|tls [-n|p|c]"
-	echo "Create options:"
-	echo "  -n     Node name."
-    echo "  -p     Peer URLs."
-    echo "  -c     Cluster Name."
-	echo "Tls options: "
+	echo "Syntax: $script_name -n|p|c"
 	echo "  -n     Node name."
     echo "  -p     Peer URLs."
     echo "  -c     Cluster Name."
 	echo " "
 }
-
-if [ -z "$1" ]; then usage; fi
-
-command=$1
-
-shift 1
 
 while getopts ":n:p:c:" o; do
     case "${o}" in
@@ -172,5 +155,9 @@ done
 
 shift $((OPTIND-1))
 
+if [ -z "$node_id" ] || [ -z "$cluster_name" ] || [ -z "$peer_addrs" ]; then
+    usage
+    exit 1
+fi
+
 create_tls_config "@0"
-copy_certs "@0"

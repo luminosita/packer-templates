@@ -551,6 +551,6 @@ elif [ $command == "server" ]; then
     server_cert "$root_ca_intermediate_dir" "$info" "$ip_sans"
 else 
     echo "Unsupported command !!!"
-
-    exit 1
 fi
+
+rm -rf "$DIR/tmp"

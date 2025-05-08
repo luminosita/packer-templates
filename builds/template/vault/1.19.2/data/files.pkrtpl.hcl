@@ -1,6 +1,6 @@
 - content: |-
     [Unit]
-    Description=ROT13 demo service
+    Description=Vault Service
     After=network.target
     StartLimitIntervalSec=0
     [Service]
@@ -16,3 +16,8 @@
   path: "/etc/systemd/system/vault.service"
   owner: "root:root"
   permissions: "0644"
+- content: |-
+    ${indent(4, file(custom_scripts[0]))}    
+  path: /usr/local/bin/hc_create_vault_config.sh
+  owner: "root:root"
+  permissions: "0755"

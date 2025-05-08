@@ -50,18 +50,21 @@ Internal name: cc_scripts_per_boot
 - [ ] Cloud images/Templates
     - [x] Debian + Cloud init
     - [ ] Vault (service, config script) 
+      - [ ] Double-reboot (SSH not starting)
+      - [ ] Install Vault with Apt
       - [ ] ACME 
       - [ ] Keepalived
     - [x] GNS3
     - [ ] OPNSense + Config patch + Config apply
     - [ ] Talos
     - [ ] Mikrotik
-- [x] Certificates
+- [ ] Certificates
     - [x] CA certificates
     - [x] Intermediate CA
         - [x] Server certificates for Vault instances
     - [x] CA SSH key (Bitwarden)
     - [x] Store SSH key to Bitwarden
+    - [ ] Store CA/Intermediate private keys to Bitwarden or only Private Key password
     - [x] No password entry repetition
 - [ ] Cleanup unused variables
 - [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "
