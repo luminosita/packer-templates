@@ -56,7 +56,7 @@ Internal name: cc_scripts_per_boot
     - [ ] OPNSense + Config patch + Config apply
     - [ ] Talos
     - [ ] Mikrotik
-- [ ] Certificates
+- [x] Certificates
     - [x] CA certificates
     - [x] Intermediate CA
         - [x] Server certificates for Vault instances

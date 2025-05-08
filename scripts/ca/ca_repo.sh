@@ -3,7 +3,14 @@
 set -e
 
 create_ca_cnf() {
-    cnf_dir=$1
+    _display_name=$1
+    _cnf_dir=$2
+
+    printf "\n%s" \
+        "Generating $_display_name configuration ($_cnf_dir)" \
+        ""
+    sleep 2 # Added for human readability
+
     echo '# OpenSSL root CA configuration file.
 # Copy to `/root/ca/openssl.cnf`.
 
@@ -12,8 +19,8 @@ create_ca_cnf() {
 default_ca = CA_default
 
 [ CA_default ]
-# Directory and file locations.' > "$cnf_dir/openssl.cnf"
-    echo 'dir               = '$cnf_dir >> "$cnf_dir/openssl.cnf"
+# Directory and file locations.' > "$_cnf_dir/openssl.cnf"
+    echo 'dir               = '"$_cnf_dir" >> "$_cnf_dir/openssl.cnf"
     echo 'certs             = $dir/certs
 crl_dir           = $dir/crl
 new_certs_dir     = $dir/newcerts
@@ -135,11 +142,18 @@ basicConstraints = CA:FALSE
 subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer
 keyUsage = critical, digitalSignature
-extendedKeyUsage = critical, OCSPSigning' >> "$cnf_dir/openssl.cnf"
+extendedKeyUsage = critical, OCSPSigning' >> "$_cnf_dir/openssl.cnf"
 }
 
 create_intermediate_cnf() {
-    cnf_dir=$1
+    _display_name=$1
+    _cnf_dir=$2
+
+    printf "\n%s" \
+        "Generating $_display_name configuration ($_cnf_dir)" \
+        ""
+    sleep 2 # Added for human readability
+
     echo '# OpenSSL intermediate CA configuration file.
 # Copy to `/root/ca/intermediate/openssl.cnf`.
 
@@ -148,8 +162,8 @@ create_intermediate_cnf() {
 default_ca = CA_default
 
 [ CA_default ]
-# Directory and file locations.' > "$cnf_dir/openssl.cnf"
-    echo 'dir               = '$cnf_dir >> "$cnf_dir/openssl.cnf"
+# Directory and file locations.' > "$_cnf_dir/openssl.cnf"
+    echo 'dir               = '$_cnf_dir >> "$_cnf_dir/openssl.cnf"
     echo 'certs             = $dir/certs
 crl_dir           = $dir/crl
 new_certs_dir     = $dir/newcerts
@@ -280,7 +294,11 @@ basicConstraints = CA:FALSE
 subjectKeyIdentifier = hash
 authorityKeyIdentifier = keyid,issuer
 keyUsage = critical, digitalSignature
-extendedKeyUsage = critical, OCSPSigning' >> "$cnf_dir/openssl.cnf"
+extendedKeyUsage = critical, OCSPSigning' >> "$_cnf_dir/openssl.cnf"
+}
+
+get_display_name() {
+    echo $(echo "$1" | sed -e "s/.*CN=\(\.*\)/\1/")
 }
 
 intermediate_sign_server() {
@@ -289,7 +307,7 @@ intermediate_sign_server() {
     _subj="$3"
     _ip_sans="$4"
 
-    _name=$(echo "$_subj" | sed -e "s/.*CN=\(\.*\)/\1/")
+    _name=$(get_display_name "$_subj")
     _alt="subjectAltName = DNS:$_name,DNS:*.$_name,$_ip_sans"
 
     printf "\n%s" \
@@ -323,7 +341,7 @@ ca_sign_intermediate() {
     _certs_folder="$3/certs"
 
     printf "\n%s" \
-        "Signing CA $_display_name certificate (CA: $_root_ca_cert, CSR: $_csr_folder/$_name.csr.pem)" \
+        "Signing $_display_name certificate (CA: $_root_ca_cert, CSR: $_csr_folder/$_name.csr.pem)" \
         ""
     sleep 2 # Added for human readability
 
@@ -334,7 +352,7 @@ ca_sign_intermediate() {
     chmod 444 "$_certs_folder/$_name.cert.pem"
 
     printf "\n%s" \
-        "Verifing CA $_display_name certificate" \
+        "Verifing $_display_name certificate" \
         ""
     sleep 2 # Added for human readability
 
@@ -347,11 +365,31 @@ ca_sign_intermediate() {
     chmod 444 "$_certs_folder/ca-chain.cert.pem"
 }
 
-server_csr() {
+intermediate_csr() {
     _display_name="$1"
     _root_ca="$2"
-    _subj="$3"
-    _ip_sans="$4"
+    _name="$3"
+    _subj="$4"
+
+    printf "\n%s" \
+        "Generating $_display_name CSR (CA: $_root_ca, NAME: $_name, SUBJ: $_subj)" \
+        ""
+    sleep 2 # Added for human readability
+
+    openssl genrsa -aes256 -passout pass:$password -out "$_root_ca/private/$_name.key.pem" 4096
+    chmod 400 "$_root_ca/private/$_name.key.pem"
+
+    openssl req -config "$_root_ca/openssl.cnf" -new -sha256 \
+        -key "$_root_ca/private/$_name.key.pem" \
+        -subj "$_subj" -out "$_root_ca/csr/$_name.csr.pem" -passin pass:$password
+}
+
+server_cert() {
+    _root_ca="$1"
+    _subj="$2"
+    _ip_sans="$3"
+
+    _display_name=$(get_display_name "$_subj")
 
     _name=$(echo "$_subj" | sed -e "s/.*CN=\(\.*\)/\1/")
     _alt="subjectAltName = DNS:$_name,DNS:*.$_name,$_ip_sans"
@@ -368,25 +406,8 @@ server_csr() {
         -key "$_root_ca/private/$_name.key.pem" \
         -new -sha256 -out "$_root_ca/csr/$_name.csr.pem" -subj "$_subj" \
         -addext "$_alt"
-}
 
-intermediate_csr() {
-    _display_name="$1"
-    _root_ca="$2"
-    _name="$3"
-    _subj="$4"
-
-    printf "\n%s" \
-        "Generating Server $_display_name CSR (CA: $_root_ca, NAME: $_name, SUBJ: $_subj)" \
-        ""
-    sleep 2 # Added for human readability
-
-    openssl genrsa -aes256 -passout pass:$password -out "$_root_ca/private/$_name.key.pem" 4096
-    chmod 400 "$_root_ca/private/$_name.key.pem"
-
-    openssl req -config "$_root_ca/openssl.cnf" -new -sha256 \
-        -key "$_root_ca/private/$_name.key.pem" \
-        -subj "$_subj" -out "$_root_ca/csr/$_name.csr.pem" -passin pass:$password
+    intermediate_sign_server "$display_name" "$root_ca_intermediate_dir" "$info" "$ip_sans"
 }
 
 ca_cert() {
@@ -396,7 +417,7 @@ ca_cert() {
     _subj="$4"
 
     printf "\n%s" \
-        "Generating CA $1 certificate (Cert: $_root_ca/certs/$_name.cert.pem, Subject: $_subj)" \
+        "Generating $_display_name certificate (Cert: $_root_ca/certs/$_name.cert.pem, Subject: $_subj)" \
         ""
     sleep 2 # Added for human readability
 
@@ -411,57 +432,45 @@ ca_cert() {
 }
 
 ca_dir() {
-    _root_ca="$2"
+    _is_root_ca=$1
+    _display_name="$2"
+    _root_ca="$3"
 
     printf "\n%s" \
-        "Generating CA $1 folder ($_root_ca)" \
+        "Generating $_display_name folder ($_root_ca)" \
         ""
     sleep 2 # Added for human readability
 
     mkdir -p "$_root_ca"
 
-    mkdir -p "$_root_ca/certs" "$_root_ca/crl" "$_root_ca/newcerts" "$_root_ca/private"
+    mkdir -p "$_root_ca/certs" "$_root_ca/csr" "$_root_ca/crl" "$_root_ca/newcerts" "$_root_ca/private"
     chmod 700 "$_root_ca/private"
     touch "$_root_ca/index.txt"
     echo 1000 > "$_root_ca/serial"
-
-    if [ $1 != $ROOT ]; then
-        mkdir -p "$_root_ca/csr"
-        
-        echo 1000 > "$_root_ca/crlnumber"
-    fi
-
-    printf "\n%s" \
-        "Generating CA $1 configuration ($_root_ca)" \
-        ""
-    sleep 2 # Added for human readability
-    
-    if [ $1 == $ROOT ]; then
-        create_ca_cnf "$_root_ca"
-    else
-        create_intermediate_cnf "$_root_ca"
-    fi
+    echo 1000 > "$_root_ca/crlnumber"
 }
 
 init_ca() {
-    _ca_info="/C=SR/ST=Serbia/L=Belgrade/O=$1 doo/OU=$1 Certificate Authority/CN=$1 Root CA"
-
+    _ca_info=$1
     _root_ca_dir="$2"
 
-    ca_dir "$ROOT" "$_root_ca_dir"
+    _display_name=$(get_display_name "$_ca_info")
 
-    ca_cert "$ROOT" "$_root_ca_dir" "$CA_KEY_NAME" "$_ca_info"
+    ca_dir true "$_display_name" "$_root_ca_dir"
+    create_ca_cnf "$_display_name" "$_root_ca_dir"
+
+    ca_cert "$_display_name" "$_root_ca_dir" "$CA_KEY_NAME" "$_ca_info"
 }
 
 init_intermediate() {
-    _ca_intermediate_info="/C=SR/ST=Serbia/L=Belgrade/O=$1 doo/OU=$1 Certificate Authority/CN=$1 Intermediate CA"
+    _ca_intermediate_info=$1
+    _display_name=$(get_display_name "$_ca_intermediate_info")
+    _name="$2"
+    _root_ca_dir="$3"
+    _root_ca_intermediate_dir="$4"
 
-    _display_name="$2"
-    _name="$3"
-    _root_ca_dir="$4"
-    _root_ca_intermediate_dir="$5"
-
-    ca_dir "$_display_name" "$_root_ca_intermediate_dir"
+    ca_dir false "$_display_name" "$_root_ca_intermediate_dir"
+    create_intermediate_cnf "$_display_name" "$_root_ca_intermediate_dir"
 
     intermediate_csr "$_display_name" "$_root_ca_intermediate_dir" "$_name" "$_ca_intermediate_info"
     ca_sign_intermediate "$_display_name" "$_root_ca_dir" "$_root_ca_intermediate_dir" "$CA_KEY_NAME" "$_name"
@@ -473,13 +482,12 @@ usage() {
 	echo
 	echo "Syntax: $script_name init_ca|init_int|server [-i|d|n|p]"
 	echo "Init CA options:"
-	echo "  -i     Organization name (e.g. Local)"
+	echo "  -i     Server Info (e.g. \"/C=SR/ST=Serbia/L=Belgrade/O=Local doo/OU=Local Certificate Authority/CN=Root CA\")"
 	echo "Init Intermediate options:"
-	echo "  -i     Organization name (e.g. Local)"
+	echo "  -i     Server Info (e.g. \"/C=SR/ST=Serbia/L=Belgrade/O=Local doo/OU=Local Certificate Authority/CN=Local Intermediate CA\")"
 	echo "  -n     CA Name (e.g. intermediate)"
-	echo "  -d     CA Display Name (e.g. Intermediate)"
 	echo "Server options:"
-	echo "  -i     Server Info (e.g. /C=SR/ST=Serbia/L=Belgrade/O=Local doo/OU=Local Vault Service/CN=vault.lan)."
+	echo "  -i     Server Info (e.g. \"/C=SR/ST=Serbia/L=Belgrade/O=Local doo/OU=Local Vault Service/CN=vault.lan\")."
     echo "  -d     Server Display Name (e.g. Vault Service)"
 	echo "  -n     CA Name (e.g. intermediate)"
     echo "  -p     IP SANS (e.g. IP:172.16.20.11,IP:172.16.20.12,IP:172.16.20.13)"
@@ -548,24 +556,23 @@ if [ $command == "init_ca" ]; then
 
     init_ca "$info" "$root_ca_dir"
 elif [ $command == "init_int" ]; then
-    if [ -z "$info" ] || [ -z "$display_name" ] || [ -z "$name" ]; then
+    if [ -z "$info" ] || [ -z "$name" ]; then
         usage
         exit 1
     fi
 
     root_ca_intermediate_dir="$root_ca_dir/$name"
 
-    init_intermediate "$info" "$display_name" "$name" "$root_ca_dir" "$root_ca_intermediate_dir"
+    init_intermediate "$info" "$name" "$root_ca_dir" "$root_ca_intermediate_dir"
 elif [ $command == "server" ]; then
-    if [ -z "$info" ] || [ -z "$display_name" ] || [ -z "$name" ] || [ -z "$ip_sans" ]; then
+    if [ -z "$info" ] || [ -z "$name" ] || [ -z "$ip_sans" ]; then
         usage
         exit 1
     fi
 
     root_ca_intermediate_dir="$root_ca_dir/$name"
 
-    server_csr "$display_name" "$root_ca_intermediate_dir" "$info" "$ip_sans"
-    intermediate_sign_server "$display_name" "$root_ca_intermediate_dir" "$info" "$ip_sans"
+    server_cert "$root_ca_intermediate_dir" "$info" "$ip_sans"
 else 
     echo "Unsupported command !!!"
 

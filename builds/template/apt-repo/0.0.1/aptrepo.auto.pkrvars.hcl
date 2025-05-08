@@ -24,4 +24,4 @@ vm_ci_runcmds  = {
     debian = [ "systemctl daemon-reload", "systemctl start qemu-guest-agent" ]
 }
 
-vm_ci_scripts = [ "apt/apt_repo.sh" ]
+vm_ci_scripts = [ "apt/apt_repo.sh", "ca/ca_repo.sh" ]

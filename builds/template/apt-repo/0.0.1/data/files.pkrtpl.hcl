@@ -1,9 +1,4 @@
 - content: |-
-    ${indent(4, file(custom_scripts[0]))}    
-  path: /usr/local/bin/apt_repo.sh
-  owner: "root:root"
-  permissions: "0755"
-- content: |-
     server {
       listen 80 default_server;
       listen [::]:80 default_server;
@@ -26,3 +21,13 @@
   path: /etc/nginx/sites-available/default
   owner: "root:root"
   permissions: "0644"
+- content: |-
+    ${indent(4, file(custom_scripts[0]))}    
+  path: /usr/local/bin/apt_repo.sh
+  owner: "root:root"
+  permissions: "0755"
+- content: |-
+    ${indent(4, file(custom_scripts[1]))}    
+  path: /usr/local/bin/ca_repo.sh
+  owner: "root:root"
+  permissions: "0755"
