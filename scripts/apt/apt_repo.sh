@@ -29,7 +29,7 @@ make_release_file() {
     _curdir=$(pwd)
     cd $dists_stable
 
-    release_content=$(cat $apt_repo_dir/apt_repo_info)
+    release_content=$(cat $apt_repo_info)
     release_content+=$'\n'
     release_content+=$(do_hash "MD5Sum" "md5sum")
     release_content+=$'\n'
@@ -44,8 +44,13 @@ make_release_file() {
 }
 
 scan_packages() {
-    dpkg-scanpackages --arch amd64 $pool_dir/ > $dists_stable_binary_amd64/Packages
+    _curdir=$(pwd)
+    cd $apt_repo_dir
+
+    dpkg-scanpackages --arch amd64 pool/ > $dists_stable_binary_amd64/Packages
     cat $dists_stable_binary_amd64/Packages | gzip -9 > $dists_stable_binary_amd64/Packages.gz
+
+    cd $_curdir
 }
 
 create_pgp_key_info() {
@@ -62,6 +67,20 @@ Expire-Date: 0
 EOF
 }
 
+create_apt_repo_info() {
+    tee $apt_repo_info > /dev/null <<EOF
+Origin: Local Repository
+Label: Local
+Suite: stable
+Codename: stable
+Version: 1.0
+Architectures: amd64 arm64 arm7
+Components: main
+Description: An example software repository
+Date: $(date -Ru)
+EOF
+}
+
 create_pgp_keyring() {
     export GNUPGHOME="$(mktemp -d $pgp_dir/pgpkeys-XXXXXX)"
 
@@ -70,7 +89,7 @@ create_pgp_keyring() {
     gpg --armor --export-secret-keys $pgp_key_name > $pgp_dir/pgp-key.private
 
     gpg --no-default-keyring --keyring $tmp_dir/temp-keyring.gpg --import $pgp_dir/pgp-key.public
-    gpg --no-default-keyring --keyring $tmp_dir/temp-keyring.gpg --export --output $pgp_dir/pgp-key.gpg
+    gpg --no-default-keyring --keyring $tmp_dir/temp-keyring.gpg --export --output $apt_repo_dir/pgp-key.gpg
     rm $tmp_dir/temp-keyring.gpg*
 
     echo $GNUPGHOME | tee $DIR/.gnupghome
@@ -105,6 +124,7 @@ log() {
 
 pool_dir=$DIR/local/apt-repo/pool
 pool_main_dir=$pool_dir/main
+apt_repo_info=$DIR/local/apt_repo_info
 apt_repo_dir=$DIR/local/apt-repo
 dists_stable=$apt_repo_dir/dists/stable
 dists_stable_release=$dists_stable/Release
@@ -153,7 +173,7 @@ if [ $command == "init" ]; then
         ""
     sleep 2 # Added for human readability
 
-    if [ ! -z $pgp_dir ]; then
+    if [ -d $pgp_dir ]; then 
         printf "\n%s" \
             "Removing old PGP folder" \
             ""
@@ -170,6 +190,13 @@ if [ $command == "init" ]; then
     mkdir -p $pool_main_dir
     mkdir -p $dists_stable_binary_amd64
     mkdir -p $pgp_dir
+
+    printf "\n%s" \
+        "Creating apt repository info" \
+        ""
+    sleep 2 # Added for human readability
+
+    create_apt_repo_info
 
     printf "\n%s" \
         "Creating PGP key info" \
