@@ -44,8 +44,8 @@ Internal name: cc_scripts_per_boot
 - [x] Disable public keys from cloud-init
 - [x] Delete build_password_encrypted
 - [x] Trust CA Key SSH Authority (backup) instead of public SSH keys in .authorized_keys
-- [ ] apk / apt repository for vault-ssh-helper binary
-- [ ] IMPROTANT: Copy vault-ssh-helper for Alpine tempate image 
+- [x] apk / apt repository for vault-ssh-helper binary
+- [x] IMPROTANT: Copy vault-ssh-helper for Alpine tempate image 
 
 - [ ] Cloud images/Templates
     - [x] Debian + Cloud init
@@ -57,13 +57,12 @@ Internal name: cc_scripts_per_boot
     - [ ] Talos
     - [ ] Mikrotik
 - [ ] Certificates
-    - [ ] CA certificates
-    - [ ] Server CA (intermediate) for Vault
-        - [ ] Client certificates for Vault instances
-    - [ ] CA SSH key
-    - [ ] Server CA (intermediate) for SSH CA Trust
-        - [ ] Client certificates for SSH login
-    - [ ] Store both CA to HCP Cloud
+    - [x] CA certificates
+    - [x] Intermediate CA
+        - [x] Server certificates for Vault instances
+    - [x] CA SSH key (Bitwarden)
+    - [x] Store SSH key to Bitwarden
+    - [ ] No password entry repetition
 - [ ] Cleanup unused variables
 - [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "
 - [ ] Proxmox KSM
@@ -73,5 +72,4 @@ Internal name: cc_scripts_per_boot
 - [ ] Instructions for each template after creation is done
 
 
-vault write ssh/creds/otp-key-role ip=172.16.1.164
 
