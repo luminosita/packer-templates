@@ -49,7 +49,9 @@ Internal name: cc_scripts_per_boot
 
 - [ ] Cloud images/Templates
     - [x] Debian + Cloud init
-    - [ ] Vault (service, config script, keepalived)
+    - [ ] Vault (service, config script) 
+      - [ ] ACME 
+      - [ ] Keepalived
     - [x] GNS3
     - [ ] OPNSense + Config patch + Config apply
     - [ ] Talos
