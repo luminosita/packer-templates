@@ -4,6 +4,7 @@
 # Configurations
 ## Ignore default config directory.
 config/
+certs/
 
 # Manifests
 ## Ignore manifests directory.
@@ -21,4 +22,4 @@ manifests/*.json
 ## Ignore public key files
 **/*.pub
 
-output
+output/
