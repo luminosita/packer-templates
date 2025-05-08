@@ -62,7 +62,7 @@ Internal name: cc_scripts_per_boot
         - [x] Server certificates for Vault instances
     - [x] CA SSH key (Bitwarden)
     - [x] Store SSH key to Bitwarden
-    - [ ] No password entry repetition
+    - [x] No password entry repetition
 - [ ] Cleanup unused variables
 - [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "
 - [ ] Proxmox KSM

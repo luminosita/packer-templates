@@ -283,7 +283,7 @@ keyUsage = critical, digitalSignature
 extendedKeyUsage = critical, OCSPSigning' >> "$cnf_dir/openssl.cnf"
 }
 
-server_sign() {
+intermediate_sign_server() {
     _display_name="$1"
     _root_ca="$2"
     _subj="$3"
@@ -299,7 +299,7 @@ server_sign() {
 
     openssl ca -config "$_root_ca/openssl.cnf" -extensions server_cert \
         -days 375 -notext -md sha256 -in "$_root_ca/csr/$_name.csr.pem" \
-        -out "$_root_ca/certs/$_name.cert.pem"
+        -out "$_root_ca/certs/$_name.cert.pem" -passin pass:$password
     chmod 444 "$_root_ca/certs/$_name.cert.pem"
 
     printf "\n%s" \
@@ -329,7 +329,7 @@ ca_sign_intermediate() {
 
     openssl ca -config "$_root_ca/openssl.cnf" -extensions v3_intermediate_ca \
         -days 3650 -notext -md sha256 -in "$_csr_folder/$_name.csr.pem" \
-        -out "$_certs_folder/$_name.cert.pem"
+        -out "$_certs_folder/$_name.cert.pem" -passin pass:$password
 
     chmod 444 "$_certs_folder/$_name.cert.pem"
 
@@ -381,12 +381,12 @@ intermediate_csr() {
         ""
     sleep 2 # Added for human readability
 
-    openssl genrsa -aes256 -out "$_root_ca/private/$_name.key.pem" 4096
+    openssl genrsa -aes256 -passout pass:$password -out "$_root_ca/private/$_name.key.pem" 4096
     chmod 400 "$_root_ca/private/$_name.key.pem"
 
     openssl req -config "$_root_ca/openssl.cnf" -new -sha256 \
         -key "$_root_ca/private/$_name.key.pem" \
-        -subj "$_subj" -out "$_root_ca/csr/$_name.csr.pem"
+        -subj "$_subj" -out "$_root_ca/csr/$_name.csr.pem" -passin pass:$password
 }
 
 ca_cert() {
@@ -400,13 +400,13 @@ ca_cert() {
         ""
     sleep 2 # Added for human readability
 
-    openssl genrsa -aes256 -out "$_root_ca/private/$_name.key.pem" 4096
+    openssl genrsa -aes256 -passout pass:$password -out "$_root_ca/private/$_name.key.pem" 4096
     chmod 400 "$_root_ca/private/$_name.key.pem"
 
     openssl req -config "$_root_ca/openssl.cnf" \
         -key "$_root_ca/private/$_name.key.pem" \
         -new -sha256 -out "$_root_ca/certs/$_name.cert.pem" \
-        -x509 -subj "$_subj" -days 7300 -extensions v3_ca 
+        -x509 -subj "$_subj" -days 7300 -extensions v3_ca -passin pass:$password
     chmod 444 "$_root_ca/certs/$_name.cert.pem"
 }
 
@@ -538,6 +538,8 @@ mkdir -p "$DIR/tmp"
 
 echo "Root CA Folder: $root_ca_dir"
 
+read -p "PEM Password: " password
+
 if [ $command == "init_ca" ]; then
     if [ -z "$info" ]; then
         usage
@@ -563,7 +565,7 @@ elif [ $command == "server" ]; then
     root_ca_intermediate_dir="$root_ca_dir/$name"
 
     server_csr "$display_name" "$root_ca_intermediate_dir" "$info" "$ip_sans"
-    server_sign "$display_name" "$root_ca_intermediate_dir" "$info" "$ip_sans"
+    intermediate_sign_server "$display_name" "$root_ca_intermediate_dir" "$info" "$ip_sans"
 else 
     echo "Unsupported command !!!"
 
