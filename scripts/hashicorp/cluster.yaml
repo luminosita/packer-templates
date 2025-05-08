@@ -1,0 +1,8 @@
+cluster: Belgrade
+nodes:
+- name: Noa
+  address: 172.16.20.11
+- name: Lena
+  address: 172.16.20.12
+- name: Mina
+  address: 172.16.20.13

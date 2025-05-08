@@ -26,3 +26,4 @@ sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault))
 copy_certs
 
 sudo chown -R $user:$group $vault_config_folder
+sudo chown -R $user:$group $vault_data_folder
