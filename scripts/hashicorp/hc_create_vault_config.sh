@@ -22,7 +22,7 @@ declare -A peers_addrs
 function create_tls_peers {
 	for peer in ${peer_addrs[@]};
 	do
-        if [ peer != ip ]; then
+        if [ $peer != $ip ]; then
             peers+=$(cat <<EOF
     retry_join {
         leader_api_addr             = "https://$peer:$port"
@@ -41,7 +41,7 @@ EOF
 function create_non_tls_peers {
 	for peer in ${peer_addrs[@]};
 	do
-        if [ peer != ip ]; then
+        if [ $peer != $ip ]; then
             peers+=$(cat <<EOF
     retry_join {
         leader_api_addr             = "http://$peer:$port"
@@ -66,7 +66,7 @@ function create_tls_config {
 ui                      = true
 log_level               = "trace"
 api_addr                = "https://$ip:$port"
-cluster_addr  			= "https://$ip:$cport"
+cluster_addr            = "https://$ip:$cport"
 disable_mlock           = true
 disable_cache           = true
 cluster_name            = "$cluster_name"
@@ -101,7 +101,7 @@ function create_non_tls_config {
 ui                      = true
 log_level               = "info"
 api_addr                = "http://$ip:$port"
-cluster_addr  			= "http://$ip:$cport"
+cluster_addr            = "http://$ip:$cport"
 disable_mlock           = true
 disable_cache           = true
 cluster_name            = "$cluster_name"
@@ -126,8 +126,8 @@ function usage {
 	echo
 	echo "Syntax: $script_name -n|p|c"
 	echo "  -n     Node name."
-    echo "  -p     Peer URLs."
-    echo "  -c     Cluster Name."
+	echo "  -p     Peer URLs. Allowed multiple flag usage for each IP."
+	echo "  -c     Cluster Name."
 	echo " "
 }
 
