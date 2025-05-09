@@ -34,7 +34,7 @@
   owner: "root:root"
   permissions: "0644"
 - content: |-
-    ${indent(4, file(custom_scripts[0]))}    
+    ${indent(4, file("${script_root}/${custom_scripts.vault_config}"))}    
   path: /usr/local/bin/hc_create_vault_config.sh
   owner: "root:root"
   permissions: "0755"

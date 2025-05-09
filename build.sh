@@ -505,6 +505,7 @@ menu_option_template() {
   packer build \
       -var "vm_clone_name=$4" \
       -var "vm_os_name=$3" \
+      -var "vm_os_release=$5" \
       -var-file="$CONFIG_PATH/build.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/common.pkrvars.hcl" \
       -var-file="$CONFIG_PATH/linux-storage.pkrvars.hcl" \
@@ -616,7 +617,7 @@ menu_cloud_image() {
         if [ -z "$1" ]; then 
           menu_option_cloud_image "Alpine" "alpine/3.21.2" 
         else 
-          menu_option_template "$1" "$2" "alpine" "linux-alpine-3.21.2" 
+          menu_option_template "$1" "$2" "alpine" "linux-alpine-3.21.2" "alpine"
         fi
         press_enter
         ;;
@@ -624,7 +625,7 @@ menu_cloud_image() {
         if [ -z "$1" ]; then 
           menu_option_cloud_image "Ubuntu" "ubuntu/24.04-lts" 
         else 
-          menu_option_template "$1" "$2" "ubuntu" "linux-ubuntu-24.04-lts" 
+          menu_option_template "$1" "$2" "ubuntu" "linux-ubuntu-24.04-lts" "noble"
         fi
         press_enter
         ;;
@@ -632,7 +633,7 @@ menu_cloud_image() {
         if [ -z "$1" ]; then 
           menu_option_cloud_image "Debian" "debian/12-latest" 
         else 
-          menu_option_template "$1" "$2" "debian" "linux-debian-12-latest" 
+          menu_option_template "$1" "$2" "debian" "linux-debian-12-latest" "bookworm"
         fi
         press_enter
         ;;

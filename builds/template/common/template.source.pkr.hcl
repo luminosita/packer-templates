@@ -14,15 +14,20 @@ locals {
       username                 = var.vm_default_username
       vm_disk_type             = local.vm_disk_type
       random_pass              = data.password.random_pass.crypt
+      apt_repos                = var.vm_ci_aptrepos[var.vm_os_name]
+      vm_os_release            = var.vm_os_release
+      gpg_root                 = local.gpg_root
+      script_root              = local.script_root
       packages                 = join("\n", formatlist("- %s", var.vm_ci_packages[var.vm_os_name]))
       run_commands             = join("\n", formatlist("- %s", var.vm_ci_runcmds[var.vm_os_name]))
-      ssh_host_keys_script     = "${local.script_root}/ssh_host_keys.sh"
       write_files              = fileexists("${abspath(path.root)}/data/files.pkrtpl.hcl") ? templatefile("${abspath(path.root)}/data/files.pkrtpl.hcl", {
         username                 = var.vm_default_username
-        custom_scripts           = formatlist("${local.script_root}/%s", var.vm_ci_scripts)
+        script_root              = local.script_root
+        custom_scripts           = var.vm_ci_scripts
       }) : templatefile("${abspath(path.root)}/data/files.${var.vm_os_name}.pkrtpl.hcl", {
         username                 = var.vm_default_username
-        custom_scripts           = formatlist("${local.script_root}/%s", var.vm_ci_scripts)
+        script_root              = local.script_root
+        custom_scripts           = var.vm_ci_scripts
       })
     })
     "/network-config"          = templatefile("${abspath(path.root)}/data/network.pkrtpl.hcl", {

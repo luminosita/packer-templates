@@ -26,6 +26,7 @@ locals {
 
   script_root       = "${abspath(path.root)}/../../scripts"
   certs_root       = "${abspath(path.root)}/../../../../certs"
+  gpg_root       = "${abspath(path.root)}/../../../../gpg"
 }
 
 build {

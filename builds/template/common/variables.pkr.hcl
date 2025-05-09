@@ -61,6 +61,11 @@ variable "vm_os_name" {
   description = "The guest operating system name. Used for naming. (e.g. 'ubuntu')"
 }
 
+variable "vm_os_release" {
+  type        = string
+  description = "The guest operating system release name. Used for apt repositories. (e.g. 'noble')"
+}
+
 variable "vm_cpu_count" {
   type        = number
   description = "The number of virtual CPUs. (e.g. '2')"
@@ -144,10 +149,15 @@ variable "vm_ci_runcmds" {
   description = "Cloud-init additional run commands."
 }
 
+variable "vm_ci_aptrepos" {
+  type        = map(list(map(string)))
+  description = "Cloud-init additional run commands."
+}
+
 variable "vm_ci_scripts" {
-  type        = list(string)
+  type        = map(string)
   description = "Cloud-init custom scripts."
-  default     = [ ] 
+  default     = {}
 }
 
 // Boot Settings

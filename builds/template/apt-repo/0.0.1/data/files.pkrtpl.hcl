@@ -22,12 +22,12 @@
   owner: "root:root"
   permissions: "0644"
 - content: |-
-    ${indent(4, file(custom_scripts[0]))}    
+    ${indent(4, file("${script_root}/${custom_scripts.apt_repo}"))}    
   path: /usr/local/bin/apt_repo.sh
   owner: "root:root"
   permissions: "0755"
 - content: |-
-    ${indent(4, file(custom_scripts[1]))}    
+    ${indent(4, file("${script_root}/${custom_scripts.ca_repo}"))}    
   path: /usr/local/bin/ca_repo.sh
   owner: "root:root"
   permissions: "0755"
