@@ -4,11 +4,28 @@ set -e
 
 source "hc_install_product.sh"
 
+# Function to log messages
+log() {
+    local timestamp=$(date +'[%Y-%m-%d %H:%M:%S]')
+    sudo su -c "echo \"$timestamp $1\" | tee -a \"$LOG_FILE\" > /dev/null"
+
+    printf "\n%s" \
+        "$1" \
+        ""
+}
+
+DIR="$(pwd "$0")"
+logs_dir="/var/log"
+
+LOG_FILE="$logs_dir/vault_$(date +'%Y%m%d_%H%M%S').log"
+
+log 'HC Vault SSH Helper Script'
+
 install "vault-ssh-helper" "0.2.1"
 
 sudo setcap cap_ipc_lock=+ep $(readlink -f $(which vault-ssh-helper))
 
-echo 'Installing Vault TLS certificate'
+log 'Installing Vault TLS certificate'
 sudo mv ./vault.crt /etc/vault-ssh-helper.d/vault.crt
 sudo chown root:root /etc/vault-ssh-helper.d/vault.crt
 
@@ -25,7 +42,7 @@ elif [ $os_name == "alpine" ]; then
 auth include vault-ssh-helper
 EOF
 else
-    echo "Unsupported OS !!!"
+    log "Unsupported OS !!!"
 
     exit 1
 fi

@@ -144,6 +144,11 @@ variable "vm_ci_packages" {
   description = "Cloud-init additional packages."
 }
 
+variable "vm_ci_bootcmds" {
+  type        = map(list(string))
+  description = "Cloud-init additional boot commands."
+}
+
 variable "vm_ci_runcmds" {
   type        = map(list(string))
   description = "Cloud-init additional run commands."

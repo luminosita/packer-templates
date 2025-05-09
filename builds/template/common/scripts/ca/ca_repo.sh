@@ -462,7 +462,7 @@ usage() {
 # Function to log messages
 log() {
     local timestamp=$(date +'[%Y-%m-%d %H:%M:%S]')
-    echo "$timestamp $1" | tee -a "$LOG_FILE" > /dev/null
+    sudo su -c "echo \"$timestamp $1\" | tee -a \"$LOG_FILE\" > /dev/null"
 
     printf "\n%s" \
         "$1" \
@@ -471,8 +471,8 @@ log() {
 }
 
 DIR="$(pwd "$0")"
-logs_dir="$DIR/logs"
-tmp_dir="$DIR/tmp"
+logs_dir="/var/log"
+tmp_dir="/tmp"
 
 ROOT="Root"
 CA_KEY_NAME="ca"
@@ -502,9 +502,6 @@ while getopts ":i:d:n:p:" o; do
     esac
 done
 shift $((OPTIND-1))
-
-mkdir -p "$DIR/logs"
-mkdir -p "$DIR/tmp"
 
 if [ -z "$info" ]; then
     usage

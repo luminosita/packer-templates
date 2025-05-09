@@ -15,16 +15,18 @@ locals {
       vm_disk_type             = local.vm_disk_type
       random_pass              = data.password.random_pass.crypt
       apt_repos                = var.vm_ci_aptrepos[var.vm_os_name]
+      vm_os_name               = var.vm_os_name
       vm_os_release            = var.vm_os_release
-      gpg_root                 = local.gpg_root
       script_root              = local.script_root
+      service_root             = local.service_root
       packages                 = join("\n", formatlist("- %s", var.vm_ci_packages[var.vm_os_name]))
+      boot_commands            = join("\n", formatlist("- %s", var.vm_ci_bootcmds[var.vm_os_name]))
       run_commands             = join("\n", formatlist("- %s", var.vm_ci_runcmds[var.vm_os_name]))
-      write_files              = fileexists("${abspath(path.root)}/data/files.pkrtpl.hcl") ? templatefile("${abspath(path.root)}/data/files.pkrtpl.hcl", {
+      write_files              = fileexists("${abspath(path.root)}/data/files.${var.vm_os_name}.pkrtpl.hcl") ? templatefile("${abspath(path.root)}/data/files.${var.vm_os_name}.pkrtpl.hcl", {
         username                 = var.vm_default_username
         script_root              = local.script_root
         custom_scripts           = var.vm_ci_scripts
-      }) : templatefile("${abspath(path.root)}/data/files.${var.vm_os_name}.pkrtpl.hcl", {
+      }) : templatefile("${abspath(path.root)}/data/files.pkrtpl.hcl", {
         username                 = var.vm_default_username
         script_root              = local.script_root
         custom_scripts           = var.vm_ci_scripts

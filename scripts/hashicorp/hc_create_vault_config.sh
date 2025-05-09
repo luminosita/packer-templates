@@ -1,0 +1,1 @@
+../../builds/template/common/scripts/hashicorp/hc_create_vault_config.sh

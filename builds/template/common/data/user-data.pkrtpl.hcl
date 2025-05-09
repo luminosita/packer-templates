@@ -10,6 +10,14 @@ users:
 - lock_passwd: false
   name: ${build_username}      #Required for Packer
   passwd: ${build_password_encrypted}
+bootcmd:
+${boot_commands}
+apt:
+  sources:
+%{ for apt_repo in apt_repos }
+    ${apt_repo.name}:
+      source: ${apt_repo.repo}
+%{ endfor ~}
 packages:
 - qemu-guest-agent
 - sudo
@@ -26,8 +34,13 @@ runcmd:
 ${run_commands}
 write_files:
 - content: |
-    ${indent(4, file(ssh_host_keys_script))} 
-  path: /usr/local/bin/ssh_host_keys.sh
+    ${indent(4, file("${service_root}/${vm_os_name}.first-boot.service"))} 
+  path: ${vm_os_name == "alpine" ? "/etc/init.d/first-boot" : "/etc/systemd/system/first-boot.service"}
+  owner: "root:root"
+  permissions: ${vm_os_name == "alpine" ? "0755" : "0644"}
+- content: |
+    ${indent(4, file("${script_root}/first_boot.sh"))} 
+  path: /usr/local/bin/first_boot.sh
   permissions: "0755"
 - content: |
     PermitRootLogin no

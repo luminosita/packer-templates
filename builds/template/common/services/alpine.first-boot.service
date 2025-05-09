@@ -1,0 +1,15 @@
+#!/sbin/openrc-run
+
+name=$RC_SVCNAME
+command="/usr/local/bin/first_boot.sh"
+command_user="root"
+command_background=true
+pidfile="/var/run/first_boot.pid"
+
+depend() {
+  need net
+}
+
+start_pre() {
+  checkpath --directory --owner $command_user:$command_user --mode 0775 /run/$RC_SVCNAME
+}

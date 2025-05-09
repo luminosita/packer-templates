@@ -24,9 +24,9 @@ locals {
   manifest_path     = "${path.cwd}/manifests/"
   manifest_output   = "${local.manifest_path}${local.manifest_date}.json"
 
-  script_root       = "${abspath(path.root)}/../../scripts"
+  script_root       = "${abspath(path.root)}/../../common/scripts"
+  service_root       = "${abspath(path.root)}/../../common/services"
   certs_root       = "${abspath(path.root)}/../../../../certs"
-  gpg_root       = "${abspath(path.root)}/../../../../gpg"
 }
 
 build {

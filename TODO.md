@@ -51,14 +51,16 @@ Internal name: cc_scripts_per_boot
     - [x] Debian + Cloud init
     - [ ] Vault (service, config script) 
       - [x] Double-reboot (SSH not starting)
-      - [ ] Install Vault with Apt
+      - [x] Install Vault with Apt
       - [ ] ACME Server
       - [ ] Keepalived
-      - [ ] SSH Host Keys service for Alpine
-      - [ ] Cloud-init apt repo and GPG keys (https://cloudinit.readthedocs.io/en/latest/reference/modules.html#apk-configure)
+      - [x] SSH Host Keys service for Alpine
+      - [x] Cloud-init apt repo and GPG keys (https://cloudinit.readthedocs.io/en/latest/reference/modules.html#apk-configure)
       - [ ] Import Root CA and Intermediate CA to Vault
       - [ ] Import CA SSH Key to Vault
-      - [ ] Unseal Vault with multiple Unseal Keys
+      - [x] Unseal Vault with multiple Unseal Keys
+      - [x] Disable cloud-init for clones
+      - [x] Delete packer user on first clone boot (ssh_host_keys service -> first_boot service)
     - [x] GNS3
     - [ ] OPNSense + Config patch + Config apply
     - [ ] Talos
@@ -80,6 +82,7 @@ Internal name: cc_scripts_per_boot
 - [ ] Update README with vault ssh login instructions
 - [ ] Instructions for each template after creation is done
 - [x] Fix hostname on clones
+- [ ] Delete log files, shell history for VM template (cloud-init logs)
 
 
 

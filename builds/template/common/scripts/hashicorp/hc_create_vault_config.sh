@@ -1,25 +1,8 @@
 #!/bin/bash
 
-#Hardcoded interface name "ens18" for Derbian/Ubuntu deployment
-ip=`ip a show dev ens18 | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*'`
+set -e
 
-port=8200
-cport=8201
-
-user=vault
-group=vault
-
-product=vault
-
-vault_config="/etc/vault.d"
-vault_config_certs="$vault_config/certs"
-vault_config_file="$vault_config/vault.hcl"
-vault_data_folder="/var/lib/vault"
-
-peers=""
-declare -A peers_addrs
-
-function create_tls_peers {
+create_tls_peers() {
 	for peer in ${peer_addrs[@]};
 	do
         if [ $peer != $ip ]; then
@@ -38,7 +21,7 @@ EOF
 	done
 }
 
-function create_non_tls_peers {
+create_non_tls_peers() {
 	for peer in ${peer_addrs[@]};
 	do
         if [ $peer != $ip ]; then
@@ -54,15 +37,12 @@ EOF
 	done
 }
 
-function create_tls_config {
-    printf "\n%s" \
-        "Creating main config ($vault_config_file)" \
-        ""
-    sleep 2 # Added for human readability
+create_tls_config() {
+    log "Creating main config ($vault_config_file)"
 
     create_tls_peers "$@"
 
-    tee $vault_config_file  <<EOF
+    tee $vault_config_file > /dev/null <<EOF
 ui                      = true
 log_level               = "trace"
 api_addr                = "https://$ip:$port"
@@ -89,15 +69,12 @@ $peers
 EOF
 }
 
-function create_non_tls_config {
-    printf "\n%s" \
-        "Creating main config ($vault_config_file)" \
-        ""
-    sleep 2 # Added for human readability
+create_non_tls_config() {
+    log "Creating main config ($vault_config_file)"
 
     create_non_tls_peers "$@"
 
-    tee $vault_config_file  <<EOF
+    tee $vault_config_file > /dev/null <<EOF
 ui                      = true
 log_level               = "info"
 api_addr                = "http://$ip:$port"
@@ -120,7 +97,7 @@ $peers
 EOF
 }
 
-function usage {
+usage() {
 	# Display Help
 	echo "Create Vault configuration files"
 	echo
@@ -130,6 +107,40 @@ function usage {
 	echo "  -c     Cluster Name."
 	echo " "
 }
+
+get_ip() {
+    _int="ens18"
+
+    _os_name=$(cat /etc/os-release | grep -e "^ID=" | sed -e "s/ID=//")
+    if [ $_os_name == "ubuntu" ] || [ $_os_name == "debian" ]; then
+        _int="ens18"
+    elif [ $_os_name == "alpine" ]; then
+        _int="eth0"
+    else
+        log "Unsupported OS !!!"
+
+        exit 1
+    fi    
+
+    echo $(ip a show dev $_int | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*')
+}
+
+# Function to log messages
+log() {
+    local timestamp=$(date +'[%Y-%m-%d %H:%M:%S]')
+    sudo su -c "echo \"$timestamp $1\" | tee -a \"$LOG_FILE\" > /dev/null"
+
+    printf "\n%s" \
+        "$1" \
+        ""
+    sleep 2 # Added for human readability
+}
+
+DIR="$(pwd "$0")"
+logs_dir="/var/log"
+tmp_dir="/tmp"
+
+LOG_FILE="$logs_dir/vault_$(date +'%Y%m%d_%H%M%S').log"
 
 while getopts ":n:p:c:" o; do
     case "${o}" in
@@ -160,4 +171,25 @@ if [ -z "$node_id" ] || [ -z "$cluster_name" ] || [ -z "$peer_addrs" ]; then
     exit 1
 fi
 
+ip=$(get_ip)
+
+port=8200
+cport=8201
+
+user=vault
+group=vault
+
+product=vault
+
+vault_config="/etc/vault.d"
+vault_config_certs="$vault_config/certs"
+vault_config_file="$vault_config/vault.hcl"
+vault_data_folder="/var/lib/vault"
+
+peers=""
+declare -A peers_addrs
+
 create_tls_config "@0"
+
+sudo chown -R vault:vault $vault_config
+

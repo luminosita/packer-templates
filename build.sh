@@ -604,6 +604,7 @@ menu_cloud_image() {
   echo "       2 -  Ubuntu Cloud Image 24.04-lts"
   echo "       3 -  Debian Cloud Image 12-latest"
   echo "       4 -  GNS3 Cloud Image 3.0.4"
+  echo "       5 -  All Base Images"
   echo ""
   echo "      Other:"
   echo ""
@@ -642,6 +643,18 @@ menu_cloud_image() {
           menu_option_cloud_image "GNS3" "gns3/3.0.4" 
         else 
           echo "Unsupported cloud image !!!"
+        fi
+        press_enter
+        ;;
+    5 ) clear
+        if [ -z "$1" ]; then 
+          menu_option_cloud_image "Alpine" "alpine/3.21.2" 
+          menu_option_cloud_image "Ubuntu" "ubuntu/24.04-lts" 
+          menu_option_cloud_image "Debian" "debian/12-latest" 
+        else 
+          menu_option_template "$1" "$2" "alpine" "linux-alpine-3.21.2" "alpine"
+          menu_option_template "$1" "$2" "ubuntu" "linux-ubuntu-24.04-lts" "noble"
+          menu_option_template "$1" "$2" "debian" "linux-debian-12-latest" "bookworm"
         fi
         press_enter
         ;;

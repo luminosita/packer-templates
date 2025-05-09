@@ -21,24 +21,53 @@ vm_runscripts   = [
 
 vm_ci_packages = {
     alpine = [ "libcap-setcap" ]
-    ubuntu = [ "libcap2-bin" ]
-    debian = [ "cron", "libcap2-bin" ]
+    ubuntu = [ "libcap2-bin", "vault" ]
+    debian = [ "cron", "libcap2-bin", "vault" ]
 }
+
 vm_ci_runcmds  = {
     alpine = [ 
         "rc-update add qemu-guest-agent", 
-        "rc-service qemu-guest-agent start" 
+        "rc-service qemu-guest-agent start", 
+        "rc-update add first-boot"
         ]
     ubuntu = [ 
         "systemctl daemon-reload", 
-        "systemctl enable ssh-host-keys",
+        "systemctl enable first-boot",
         "systemctl start qemu-guest-agent" 
         ]
     debian = [ 
         "systemctl daemon-reload", 
-        "systemctl enable ssh-host-keys",
-        "systemctl start qemu-guest-agent" 
+        "systemctl enable first-boot",
+        "systemctl start qemu-guest-agent",
         ]
 }
 
-vm_ci_scripts = [ "hashicorp/hc_create_vault_config.sh" ]
+vm_ci_bootcmds  = {
+    alpine = [ ]
+    ubuntu = [ 
+        "wget -O - https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg"
+    ]
+    debian = [ 
+        "apt update && apt -y install gpg",
+        "wget -O - https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg"
+    ]
+}
+
+vm_ci_scripts = {
+    vault_config = "hashicorp/hc_create_vault_config.sh" 
+    }
+
+vm_ci_aptrepos = {
+    alpine = []
+
+    ubuntu = [{
+        name = "hashicorp" 
+        repo = "deb [arch=amd64 signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $RELEASE main"
+    }]
+
+    debian = [{
+        name = "hashicorp" 
+        repo = "deb [arch=amd64 signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $RELEASE main"
+    }]
+}

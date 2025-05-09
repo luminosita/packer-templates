@@ -2,12 +2,6 @@
 
 set -e
 
-DIR="$(pwd "$0")"
-logs_dir=$DIR/logs
-tmp_dir=$DIR/tmp
-
-LOG_FILE="$logs_dir/template_creation_$(date +'%Y%m%d_%H%M%S').log"
-
 do_hash() {
     HASH_NAME=$1
     HASH_CMD=$2
@@ -88,9 +82,7 @@ create_pgp_keyring() {
     gpg --armor --export $pgp_key_name > $pgp_dir/pgp-key.public
     gpg --armor --export-secret-keys $pgp_key_name > $pgp_dir/pgp-key.private
 
-    gpg --no-default-keyring --keyring $tmp_dir/temp-keyring.gpg --import $pgp_dir/pgp-key.public
-    gpg --no-default-keyring --keyring $tmp_dir/temp-keyring.gpg --export --output $apt_repo_dir/pgp-key.gpg
-    rm $tmp_dir/temp-keyring.gpg*
+    gpg --dearmor -o $apt_repo_dir/pgp-key.gpg
 
     echo $GNUPGHOME | tee $DIR/.gnupghome
 }
@@ -118,9 +110,19 @@ usage() {
 
 # Function to log messages
 log() {
-  local timestamp=$(date +'[%Y-%m-%d %H:%M:%S]')
-  echo "$timestamp $1" | tee -a "$LOG_FILE"
+    local timestamp=$(date +'[%Y-%m-%d %H:%M:%S]')
+    sudo su -c "echo \"$timestamp $1\" | tee -a \"$LOG_FILE\" > /dev/null"
+
+    printf "\n%s" \
+        "$1" \
+        ""
+    sleep 2 # Added for human readability
 }
+
+DIR="$(pwd "$0")"
+logs_dir="/var/log"
+tmp_dir="/tmp"
+LOG_FILE="$logs_dir/apt_repo_$(date +'%Y%m%d_%H%M%S').log"
 
 pool_dir=$DIR/local/apt-repo/pool
 pool_main_dir=$pool_dir/main
@@ -160,63 +162,34 @@ while getopts ":i:c:s:" o; do
 done
 shift $((OPTIND-1))
 
-mkdir -p $DIR/logs
-mkdir -p $DIR/tmp
-
 if [ $command == "init" ]; then
-    # if [ -z "${vm_id}" ]; then
-    #     usage
-    # fi
-
-    printf "\n%s" \
-        "Initializing apt repository" \
-        ""
-    sleep 2 # Added for human readability
+    log "Initializing apt repository"
 
     if [ -d $pgp_dir ]; then 
-        printf "\n%s" \
-            "Removing old PGP folder" \
-            ""
-        sleep 2 # Added for human readability
+        log "Removing old PGP folder"
 
         rm -rf $pgp_dir
     fi
 
-    printf "\n%s" \
-        "Creating apt repository folders" \
-        ""
-    sleep 2 # Added for human readability
+    log "Creating apt repository folders"
 
     mkdir -p $pool_main_dir
     mkdir -p $dists_stable_binary_amd64
     mkdir -p $pgp_dir
 
-    printf "\n%s" \
-        "Creating apt repository info" \
-        ""
-    sleep 2 # Added for human readability
+    log "Creating apt repository info"
 
     create_apt_repo_info
 
-    printf "\n%s" \
-        "Creating PGP key info" \
-        ""
-    sleep 2 # Added for human readability
+    log "Creating PGP key info"
 
     create_pgp_key_info
 
-    printf "\n%s" \
-        "Creating PGP keyring" \
-        ""
-    sleep 2 # Added for human readability
+    log "Creating PGP keyring"
 
     create_pgp_keyring
 
-    printf "\n%s" \
-        "Apt repository initialized. " \
-        "NOTE: Store $pgp/pgp-key.private securely." \
-        ""
-
+    log "Apt repository initialized. NOTE: Store $pgp/pgp-key.private securely."
 elif [ $command == "generate" ]; then
     load_pgp_keyring
 
@@ -224,5 +197,5 @@ elif [ $command == "generate" ]; then
     make_release_file
     sign_release_file
 else
-    echo "Unsupported command !!!"
+    log "Unsupported command !!!"
 fi
