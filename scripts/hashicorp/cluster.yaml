@@ -1,8 +1,11 @@
 cluster: Belgrade
 nodes:
 - name: Noa
-  address: 172.16.20.11
+  address: 172.16.1.21
+  mac: BC:24:11:7F:2E:B9
 - name: Lena
-  address: 172.16.20.12
+  address: 172.16.1.22
+  mac: BC:24:11:22:5D:72
 - name: Mina
-  address: 172.16.20.13
+  address: 172.16.1.23
+  mac: BC:24:11:2E:F9:D7

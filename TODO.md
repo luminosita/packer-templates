@@ -54,6 +54,11 @@ Internal name: cc_scripts_per_boot
       - [ ] Install Vault with Apt
       - [ ] ACME Server
       - [ ] Keepalived
+      - [ ] SSH Host Keys service for Alpine
+      - [ ] Cloud-init apt repo and GPG keys (https://cloudinit.readthedocs.io/en/latest/reference/modules.html#apk-configure)
+      - [ ] Import Root CA and Intermediate CA to Vault
+      - [ ] Import CA SSH Key to Vault
+      - [ ] Unseal Vault with multiple Unseal Keys
     - [x] GNS3
     - [ ] OPNSense + Config patch + Config apply
     - [ ] Talos

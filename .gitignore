@@ -23,3 +23,6 @@ manifests/*.json
 **/*.pub
 
 output/
+
+**/root_token-vault
+**/unseal_key-vault

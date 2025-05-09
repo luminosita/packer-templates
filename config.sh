@@ -11,7 +11,7 @@ mkdir -p "$CONFIG_PATH"
 ### Copy the example input variables.
 echo
 echo "> Copying the example input variables..."
-cp -av "$SCRIPT_PATH"/builds/*.pkrvars.hcl.example "$CONFIG_PATH"
+cp -av "$SCRIPT_PATH"/examples/*.pkrvars.hcl.example "$CONFIG_PATH"
 
 ### Rename the example input variables.
 echo

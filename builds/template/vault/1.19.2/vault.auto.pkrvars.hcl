@@ -25,7 +25,10 @@ vm_ci_packages = {
     debian = [ "cron", "libcap2-bin" ]
 }
 vm_ci_runcmds  = {
-    alpine = [ "rc-update add qemu-guest-agent", "rc-service qemu-guest-agent start" ]
+    alpine = [ 
+        "rc-update add qemu-guest-agent", 
+        "rc-service qemu-guest-agent start" 
+        ]
     ubuntu = [ 
         "systemctl daemon-reload", 
         "systemctl enable ssh-host-keys",
