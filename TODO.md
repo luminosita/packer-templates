@@ -50,9 +50,9 @@ Internal name: cc_scripts_per_boot
 - [ ] Cloud images/Templates
     - [x] Debian + Cloud init
     - [ ] Vault (service, config script) 
-      - [ ] Double-reboot (SSH not starting)
+      - [x] Double-reboot (SSH not starting)
       - [ ] Install Vault with Apt
-      - [ ] ACME 
+      - [ ] ACME Server
       - [ ] Keepalived
     - [x] GNS3
     - [ ] OPNSense + Config patch + Config apply
@@ -66,6 +66,7 @@ Internal name: cc_scripts_per_boot
     - [x] Store SSH key to Bitwarden
     - [ ] Store CA/Intermediate private keys to Bitwarden or only Private Key password
     - [x] No password entry repetition
+- [ ] Caddy instead of Nginx
 - [ ] Cleanup unused variables
 - [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "
 - [ ] Proxmox KSM
@@ -73,6 +74,7 @@ Internal name: cc_scripts_per_boot
 - [ ] Update README with certificate login instructions
 - [ ] Update README with vault ssh login instructions
 - [ ] Instructions for each template after creation is done
+- [x] Fix hostname on clones
 
 
 

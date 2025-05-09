@@ -27,7 +27,7 @@ ${run_commands}
 write_files:
 - content: |
     ${indent(4, file(ssh_host_keys_script))} 
-  path: /root/ssh_host_keys.sh
+  path: /usr/local/bin/ssh_host_keys.sh
   permissions: "0755"
 - content: |
     PermitRootLogin no

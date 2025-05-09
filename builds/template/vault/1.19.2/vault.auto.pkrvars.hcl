@@ -26,8 +26,16 @@ vm_ci_packages = {
 }
 vm_ci_runcmds  = {
     alpine = [ "rc-update add qemu-guest-agent", "rc-service qemu-guest-agent start" ]
-    ubuntu = [ "systemctl daemon-reload", "systemctl start qemu-guest-agent" ]
-    debian = [ "systemctl daemon-reload", "systemctl start qemu-guest-agent" ]
+    ubuntu = [ 
+        "systemctl daemon-reload", 
+        "systemctl enable ssh-host-keys",
+        "systemctl start qemu-guest-agent" 
+        ]
+    debian = [ 
+        "systemctl daemon-reload", 
+        "systemctl enable ssh-host-keys",
+        "systemctl start qemu-guest-agent" 
+        ]
 }
 
 vm_ci_scripts = [ "hashicorp/hc_create_vault_config.sh" ]
