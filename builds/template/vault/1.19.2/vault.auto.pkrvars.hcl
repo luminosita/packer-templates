@@ -55,7 +55,7 @@ vm_ci_bootcmds  = {
 }
 
 vm_ci_scripts = {
-    vault_config = "hashicorp/hc_create_vault_config.sh" 
+    vault_setup = "hashicorp/hc_vault_node_setup.sh" 
     }
 
 vm_ci_aptrepos = {

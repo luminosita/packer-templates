@@ -27,4 +27,4 @@ manifests/*.json
 output/
 
 **/root_token-vault
-**/unseal_key-vault
+**/unseal_key-vault*

@@ -114,9 +114,9 @@ for i in "${!arr_addrs[@]}"; do
 
     #Upload changed copy of vault config script
     if  $upload; then
-        scp -i ~/.ssh/id_test_rsa hc_create_vault_config.sh vault@$vault_addr:./
-        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo mv ./hc_create_vault_config.sh /usr/local/bin/"
-        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo chown 755 /usr/local/bin/hc_create_vault_config.sh"
+        scp -i ~/.ssh/id_test_rsa hc_vault_node_setup.sh vault@$vault_addr:./
+        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo mv ./hc_vault_node_setup.sh /usr/local/bin/"
+        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo chown 755 /usr/local/bin/hc_vault_node_setup.sh"
     fi
 
     if [ $command == "destroy" ]; then
@@ -128,7 +128,7 @@ for i in "${!arr_addrs[@]}"; do
 
         ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo rm -f /var/lib/vault/vault.db && sudo rm -rf /var/lib/vault/raft"
     elif [ $command == "setup" ]; then
-        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "hc_create_vault_config.sh -c $cluster -n $vault_node_name$ip_flag"
+        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "hc_vault_node_setup.sh -c $cluster -n $vault_node_name$ip_flag"
         
         if [ $os != "alpine" ]; then 
             ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo systemctl daemon-reload"
