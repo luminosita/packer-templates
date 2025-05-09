@@ -13,6 +13,14 @@ vault_srv() {
     ( export VAULT_ADDR="https://$vault_addr:8200" && export VAULT_CACERT="$cert" && vault "$@" )
 }
 
+vault_cluster_status() {
+    ( export VAULT_ADDR="https://${arr_addrs[0]}:8200" && export VAULT_CACERT="$cert" && vault operator raft list-peers )
+}
+
+vault_node_exec() {
+    ( ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "$@" )
+}
+
 unseal() {
     if [ ! -f unseal_key-vault_1 ]; then
         INIT_RESPONSE=$(vault_srv operator init -format=json)
@@ -59,7 +67,7 @@ while getopts ":f:c:u:" o; do
             cert=${OPTARG}
             ;;
         u)
-            echo "Upload new node setup script: true"
+            echo "Upload new node setup script: ${OPTARG}"
             upload=true
             ;;
         *)
@@ -115,37 +123,37 @@ for i in "${!arr_addrs[@]}"; do
     #Upload changed copy of vault config script
     if  $upload; then
         scp -i ~/.ssh/id_test_rsa hc_vault_node_setup.sh vault@$vault_addr:./
-        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo mv ./hc_vault_node_setup.sh /usr/local/bin/"
-        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo chown 755 /usr/local/bin/hc_vault_node_setup.sh"
+        vault_node_exec "sudo mv ./hc_vault_node_setup.sh /usr/local/bin/"
+        vault_node_exec "sudo chmod 755 /usr/local/bin/hc_vault_node_setup.sh"
     fi
 
     if [ $command == "destroy" ]; then
         if [ $os != "alpine" ]; then 
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo systemctl stop vault"
+            vault_node_exec "sudo systemctl stop vault"
         else
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo rc-service vault stop"
+            vault_node_exec "sudo rc-service vault stop"
         fi
 
-        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo rm -f /var/lib/vault/vault.db && sudo rm -rf /var/lib/vault/raft"
+        vault_node_exec "sudo rm -f /var/lib/vault/vault.db && sudo rm -rf /var/lib/vault/raft"
     elif [ $command == "setup" ]; then
-        ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "hc_vault_node_setup.sh -c $cluster -n $vault_node_name$ip_flag"
+        vault_node_exec "hc_vault_node_setup.sh -c $cluster -n $vault_node_name$ip_flag"
         
         if [ $os != "alpine" ]; then 
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo systemctl daemon-reload"
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo systemctl enable vault"
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo systemctl restart vault"
+            vault_node_exec "sudo systemctl daemon-reload"
+            vault_node_exec "sudo systemctl enable vault"
+            vault_node_exec "sudo systemctl restart vault"
         else
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo rc-update add vault"
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "sudo rc-service vault restart"
+            vault_node_exec "sudo rc-update add vault"
+            vault_node_exec "sudo rc-service vault restart"
         fi
 
         echo "Waiting on Vault to start ..."
         sleep 5
 
         if [ $os != "alpine" ]; then 
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "systemctl status vault"
+            vault_node_exec "systemctl status vault"
         else
-            ssh -i ~/.ssh/id_test_rsa vault@$vault_addr "rc-status"
+            vault_node_exec "rc-status"
         fi
 
         unseal
@@ -153,3 +161,13 @@ for i in "${!arr_addrs[@]}"; do
         usage
     fi
 done
+
+if [ $command == "setup" ]; then
+    echo ""
+    echo "-------------------------"
+    echo "Cluster Info:"
+    echo "-------------------------"
+    echo ""
+
+    vault_cluster_status
+fi
