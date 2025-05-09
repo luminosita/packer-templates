@@ -6,6 +6,7 @@
 config/
 certs/**/*.pub
 certs/**/*.pem
+gpg/**/
 
 # Manifests
 ## Ignore manifests directory.
