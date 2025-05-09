@@ -1,1 +1,0 @@
-../../builds/template/common/scripts/hashicorp/hc_vault_node_setup.sh
