@@ -20,9 +20,9 @@ vm_runscripts   = [
 ]
 
 vm_ci_packages = {
-    alpine = [ "libcap-setcap" ]
-    ubuntu = [ "libcap2-bin", "vault" ]
-    debian = [ "cron", "libcap2-bin", "vault" ]
+    alpine = [ "libcap-setcap", "keepalived" ]
+    ubuntu = [ "libcap2-bin", "vault", "keepalived" ]
+    debian = [ "cron", "libcap2-bin", "vault", "keepalived" ]
 }
 
 vm_ci_runcmds  = {
@@ -56,7 +56,7 @@ vm_ci_bootcmds  = {
 
 vm_ci_scripts = {
     vault_setup = "hashicorp/hc_vault_node_setup.sh" 
-    }
+}
 
 vm_ci_aptrepos = {
     alpine = []

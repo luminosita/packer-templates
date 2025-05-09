@@ -1,4 +1,6 @@
 cluster: Belgrade
+vip: 172.16.1.50
+certificate: "/Users/milosh/ias/packer-templates/certs/vault/vault.lan.cert.pem"
 nodes:
 - name: Noa
   address: 172.16.1.21

@@ -451,7 +451,7 @@ usage() {
 	echo "Server options:"
 	echo "  -i     Server Info (e.g. \"/C=SR/ST=Serbia/L=Belgrade/O=Local doo/OU=Local Vault Service/CN=vault.lan\")."
 	echo "  -n     CA Name (e.g. intermediate)"
-    echo "  -p     IP SANS (e.g. \"IP:172.16.20.11,IP:172.16.20.12,IP:172.16.20.13\")"
+    echo "  -p     IP SANS (e.g. \"IP:172.16.20.11,IP:172.16.20.12,IP:172.16.20.13,IP:172.16.20.30\", last IP is VIP address)"
 	echo "Environment:"
 	echo "  CA_ROOT_DIR  CA Root Folder (e.g. /root)."
 	echo " "

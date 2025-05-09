@@ -6,7 +6,6 @@
 config/
 certs/**/*.pub
 certs/**/*.pem
-gpg/**/
 
 # Manifests
 ## Ignore manifests directory.
@@ -23,7 +22,7 @@ manifests/*.json
 **/*.p7b
 ## Ignore public key files
 **/*.pub
-
+**/logs
 output/
 
 **/root_token-vault
