@@ -1,1 +1,0 @@
-../../variables-storage.pkr.hcl

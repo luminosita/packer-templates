@@ -1,1 +1,1 @@
-../../template.build.pkr.hcl
+../../common/template.build.pkr.hcl

@@ -1,1 +1,1 @@
-../../template.auto.pkrvars.hcl
+../../common/template.auto.pkrvars.hcl

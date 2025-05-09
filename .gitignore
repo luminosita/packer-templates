@@ -4,7 +4,8 @@
 # Configurations
 ## Ignore default config directory.
 config/
-certs/
+certs/**/*.pub
+certs/**/*.pem
 
 # Manifests
 ## Ignore manifests directory.

@@ -1,0 +1,1 @@
+../../common/common.auto.pkrvars.hcl

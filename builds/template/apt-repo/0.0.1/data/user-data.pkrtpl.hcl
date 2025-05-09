@@ -1,1 +1,1 @@
-../../../data/user-data.pkrtpl.hcl
+../../../common/data/user-data.pkrtpl.hcl

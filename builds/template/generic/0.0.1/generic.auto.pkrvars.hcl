@@ -2,7 +2,7 @@ vm_name                 = "generic-0.0.1"
 vm_default_username     = "generic"
 
 vm_certs      = [      
-    "vault.crt",
+    "vault/vault.lan.cert.pem",
     "ca_user_key.pub"
 ]
 

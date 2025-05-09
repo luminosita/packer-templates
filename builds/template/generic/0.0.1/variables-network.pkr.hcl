@@ -1,1 +1,1 @@
-../../variables-network.pkr.hcl
+../../common/variables-network.pkr.hcl

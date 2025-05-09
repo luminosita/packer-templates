@@ -1,1 +1,1 @@
-../../../data/network.pkrtpl.hcl
+../../../common/data/network.pkrtpl.hcl
