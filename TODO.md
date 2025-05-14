@@ -51,10 +51,86 @@ Internal name: cc_scripts_per_boot
 - [ ] Cleanup unused variables
 - [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "
 - [ ] Proxmox KSM
-- [ ] Move MD articles to Wiki
+- [x] Move MD articles to Wiki
 - [ ] Instructions for each template after creation is done
 - [x] Fix hostname on clones
 - [ ] Delete log files, shell history for VM template (cloud-init logs)
 
+## Vault
+
+- [ ] Finish README for AppRole (https://developer.hashicorp.com/vault/tutorials/auth-methods/approle)
+- [x] Raft Cluster (https://developer.hashicorp.com/vault/tutorials/raft/raft-storage)
+
+- [x] Recreate SSHD keys
+- [x] Token and seal files in /tmp
+- [ ] Vault crossplane provider                             (plan #3)
+- [x] ACME, Cert-manager, Vault integration             
+- [ ] Dynamic Secrets 
+- [ ] Kubernete Secrets Injector 
+- [ ] AppRole Authentication
+
+- [x] Setup cluster script to avoid writing tokens and keys in history
+- [x] Certificates expiration and rotation
+- [x] Vault in Kubernetes
+
+- [x] Import Root CA and Intermediate CA to Vault
+- [x] Import CA SSH Key to Vault
+    - [x] https://developer.hashicorp.com/vault/docs/secrets/ssh/signed-ssh-certificates
+- [x] Unseal Vault with multiple Unseal Keys
+
+- [x] Certificates
+    - [x] CA certificates
+    - [x] Intermediate CA
+        - [x] Server certificates for Vault instances
+    - [x] CA SSH key (Bitwarden)
+    - [x] Store SSH key to Bitwarden
+    - [x] Store CA/Intermediate private keys to Bitwarden or only Private Key password
+    - [x] No password entry repetition
+- [ ] Update README with certificate login instructions
+- [ ] Update README with vault ssh login instructions
 
 
+- [ ] Vault SSH Helper
+    - [ ] Bug: vault ssh -mode=otp -role=otp-key-role IP=... (logout)
+        ```
+        URL: PUT https://172.16.20.11:8200/v1/sys/leases/revoke
+        Code: 403. Errors:
+
+        * 1 error occurred:
+        * permission denied
+        ```
+    - [x] Ubuntu image: check /etc/pam.d/sshd file to see what should be commented
+    - [x] Alpine image with pam.d and vault-ssh-helper (look at alpine-vault.yaml and alpine.yaml)
+    - [ ] Proxmox
+    - [ ] OPNSense Router
+    - [ ] Mikrotik
+
+
+- [x] Vault OIDC (https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-identity-provider)
+- [ ] Vault MFA                                                 (plan #1)
+- [ ] Dex with Vault connector for refresh tokens               (plan #2)
+
+- [ ] PVC for Vault Talos Proxmox
+- [ ] Vault Benchmark (https://developer.hashicorp.com/vault/tutorials/operations/benchmark-vault)
+
+## Caddy
+
+- [x] Caddy instead of Nginx (ACME Client for Vault)
+- [x] Caddy Security module                        
+- [x] Caddy ACME cert-mgr, TLS                     
+- [x] Caddy OIDC Vault                             
+- [ ] KrakenD                                                   (plan #4)
+- [ ] gRPC plugin for KrakenD 
+
+## Monitoring
+- [ ] Grafana Stack 
+- [ ] Grafana Alerting
+
+## Databases
+- [ ] OpenLDAP
+- [ ] Minio
+
+## UI
+- [ ] React with OpenLDAP as backend
+- [ ] CRUD UI
+- [ ] CRUD backend OpenLDAP
