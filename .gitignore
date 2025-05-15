@@ -23,6 +23,7 @@ manifests/*.json
 ## Ignore public key files
 **/*.pub
 **/logs
+**/tmp
 output/
 
 **/root_token-vault

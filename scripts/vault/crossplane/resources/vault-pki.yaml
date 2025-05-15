@@ -1,0 +1,15 @@
+apiVersion: kundun.dev/v1alpha1
+kind: PKI
+metadata:
+  name: my-pki
+spec:
+  id: pki
+  commonNamePrefix: Local
+  ouPrefix: Local
+  organization: Local doo
+  locality: Belgrade
+  province: Serbia
+  country: SR
+  compositionSelector:
+    matchLabels:
+      provider: vault

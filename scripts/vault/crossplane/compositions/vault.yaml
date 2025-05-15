@@ -1,0 +1,192 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: vault-pki
+  labels:
+    provider: vault
+spec:
+  compositeTypeRef:
+    apiVersion: kundun.dev/v1alpha1
+    kind: PKI
+  patchSets:
+  - name: ca-metadata
+    patches:
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: int-metadata
+    patches:
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+      transforms:
+      - type: string
+        string:
+          fmt: "%s-int"
+  - name: cn-root
+    patches:
+    - fromFieldPath: spec.commonNamePrefix
+      toFieldPath: spec.forProvider.commonName
+      transforms:
+      - type: string
+        string:
+          fmt: "%s Root CA"
+  - name: cn-int
+    patches:
+    - fromFieldPath: spec.commonNamePrefix
+      toFieldPath: spec.forProvider.commonName
+      transforms:
+      - type: string
+        string:
+          fmt: "%s Intermediate CA"
+  - name: subject
+    patches:
+    - fromFieldPath: spec.ouPrefix
+      toFieldPath: spec.forProvider.ou
+      transforms:
+      - type: string
+        string:
+          fmt: "%s Certificate Authority"
+    - fromFieldPath: spec.organization
+      toFieldPath: spec.forProvider.organization
+    - fromFieldPath: spec.locality
+      toFieldPath: spec.forProvider.locality
+    - fromFieldPath: spec.province
+      toFieldPath: spec.forProvider.province
+    - fromFieldPath: spec.country
+      toFieldPath: spec.forProvider.country
+  resources:
+  - name: ca-mount
+    base:
+      apiVersion: vault.vault.upbound.io/v1alpha1
+      kind: Mount
+      spec:
+        forProvider:
+          path: pki
+          type: pki
+    patches:
+    - type: PatchSet
+      patchSetName: ca-metadata
+  - name: ca-cert
+    base:
+      apiVersion: pki.vault.upbound.io/v1alpha1
+      kind: SecretBackendRootCert
+      spec:
+        providerConfigRef:
+          name: vault-provider-config
+        forProvider:
+          backendRef: 
+            name: pki
+          type: internal
+          issuerName: ca-issuer
+          keyBits: 4096
+    patches:
+    - type: PatchSet
+      patchSetName: ca-metadata
+    - type: PatchSet
+      patchSetName: cn-root
+    - type: PatchSet
+      patchSetName: subject
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.caTtl
+      toFieldPath: spec.forProvider.ttl
+  - name: ca-role
+    base:
+      apiVersion: pki.vault.upbound.io/v1alpha1
+      kind: SecretBackendRole
+      spec:
+        forProvider:
+          name: ca-role
+          backendRef: 
+            name: pki
+          allowAnyName: true
+          noStore: false
+    patches:
+    - type: PatchSet
+      patchSetName: ca-metadata
+  - name: int-mount
+    base:
+      apiVersion: vault.vault.upbound.io/v1alpha1
+      kind: Mount
+      spec:
+        forProvider:
+          path: pki_int
+          type: pki
+    patches:
+    - type: PatchSet
+      patchSetName: int-metadata
+  - name: int-csr
+    base:
+      apiVersion: pki.vault.upbound.io/v1alpha1
+      kind: SecretBackendIntermediateCertRequest
+      spec:
+        forProvider:
+          backendRef: 
+            name: pki-int
+          type: internal
+          format: pem_bundle
+          keyBits: 4096
+    patches:
+    - type: PatchSet
+      patchSetName: int-metadata
+    - type: PatchSet
+      patchSetName: cn-int
+    - type: PatchSet
+      patchSetName: subject
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.csr
+      toFieldPath: status.intCsr
+  - name: int-cert
+    base: 
+      apiVersion: pki.vault.upbound.io/v1alpha1
+      kind: SecretBackendRootSignIntermediate
+      spec:
+        forProvider:
+          backend: pki
+          issuerRef: ca-issuer
+    patches:
+    - type: PatchSet
+      patchSetName: int-metadata
+    - type: PatchSet
+      patchSetName: cn-int
+    - type: PatchSet
+      patchSetName: subject
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.intCsr
+      toFieldPath: spec.forProvider.csr
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.intTtl
+      toFieldPath: spec.forProvider.ttl
+  - name: int-cert-signed
+    base: 
+      apiVersion: pki.vault.upbound.io/v1alpha1
+      kind: SecretBackendIntermediateSetSigned
+      spec:
+        forProvider:
+          backendRef: 
+            name: pki-int
+          certificateRef:
+            name: pki-int
+    patches:
+    - type: PatchSet
+      patchSetName: int-metadata
+  - name: int-role
+    base: 
+      apiVersion: pki.vault.upbound.io/v1alpha1
+      kind: SecretBackendRole
+      spec:
+        forProvider:
+          name: int-role
+          backendRef: 
+            name: pki-int
+          allowAnyName: true
+          noStore: false
+    patches:
+    - type: PatchSet
+      patchSetName: int-metadata
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.certTtl
+      toFieldPath: spec.forProvider.ttl

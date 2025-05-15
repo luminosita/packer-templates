@@ -107,8 +107,8 @@ Internal name: cc_scripts_per_boot
 
 
 - [x] Vault OIDC (https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-identity-provider)
-- [ ] Vault MFA                                                 (plan #1)
-- [ ] Dex with Vault connector for refresh tokens               (plan #2)
+- [x] Vault MFA (SHA-1 for Andorid Google Authenticator) (https://developer.hashicorp.com/vault/docs/auth/login-mfa#time-based-one-time-password-totp)                                                
+- [ ] Dex with Vault connector for refresh tokens               
 
 - [ ] PVC for Vault Talos Proxmox
 - [ ] Vault Benchmark (https://developer.hashicorp.com/vault/tutorials/operations/benchmark-vault)
@@ -119,7 +119,7 @@ Internal name: cc_scripts_per_boot
 - [x] Caddy Security module                        
 - [x] Caddy ACME cert-mgr, TLS                     
 - [x] Caddy OIDC Vault                             
-- [ ] KrakenD                                                   (plan #4)
+- [ ] KrakenD                                                   
 - [ ] gRPC plugin for KrakenD 
 
 ## Monitoring
