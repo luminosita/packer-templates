@@ -1,0 +1,27 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: group
+  labels:
+    provider: vault
+spec:
+  compositeTypeRef:
+    apiVersion: kundun.dev/v1alpha1
+    kind: Group
+  patchSets:
+  resources:
+  - name: group
+    base:
+      apiVersion: identity.vault.upbound.io/v1alpha1
+      kind: GroupMemberEntityIds
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.name
+      toFieldPath: spec.forProvider.groupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.entities
+      toFieldPath: spec.forProvider.memberEntityIds
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.groupId

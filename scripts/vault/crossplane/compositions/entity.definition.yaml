@@ -1,0 +1,70 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: entities.kundun.dev
+spec:
+  group: kundun.dev
+  names:
+    kind: Entity
+    plural: entities
+  claimNames:
+    kind: EntityClaim
+    plural: entityclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Entity ID
+              policy:
+                type: object
+                properties:
+                  name:
+                    type: string
+                    description: Policy name
+                  paths:
+                    type: string
+                    description: Policy ACL paths
+                required: [ name, paths ]
+              username:
+                type: string
+                description: Username
+              passwordSecretRef:
+                type: object
+                properties:
+                  namespace:
+                    type: string
+                    description: Secret reference namespace
+                  name:
+                    type: string
+                    description: Secret reference name
+                  key:
+                    type: string
+                    description: Secret reference key
+                required: [ namespace, name, key ]
+              metadata:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    description: Email
+                required: [ email ]
+            required: [ id, username ]
+          status:
+            type: object
+            properties:
+              entityId:
+                type: string
+                description: Entity ID
+              userPassAccessor:
+                type: string
+                description: Userpass Accessor

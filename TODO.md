@@ -45,11 +45,11 @@ Internal name: cc_scripts_per_boot
       - [x] Disable cloud-init for clones
       - [x] Delete packer user on first clone boot (ssh_host_keys service -> first_boot service)
     - [x] GNS3
-    - [ ] OPNSense + Config patch + Config apply
-    - [ ] Talos
-    - [ ] Mikrotik
-- [ ] Cleanup unused variables
-- [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "
+    - [ ] OPNSense + Config patch + Config apply    (plan #1)
+    - [ ] Talos                                     (plan #2)
+    - [ ] Mikrotik                                  (plan #3)
+- [ ] Cleanup unused variables                      (plan #4)
+- [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "                  (plan #5)
 - [ ] Proxmox KSM
 - [x] Move MD articles to Wiki
 - [ ] Instructions for each template after creation is done
@@ -63,7 +63,7 @@ Internal name: cc_scripts_per_boot
 
 - [x] Recreate SSHD keys
 - [x] Token and seal files in /tmp
-- [ ] Vault crossplane provider                             (plan #3)
+- [x] Vault crossplane provider                             
 - [x] ACME, Cert-manager, Vault integration             
 - [ ] Dynamic Secrets 
 - [ ] Kubernete Secrets Injector 
@@ -101,9 +101,9 @@ Internal name: cc_scripts_per_boot
         ```
     - [x] Ubuntu image: check /etc/pam.d/sshd file to see what should be commented
     - [x] Alpine image with pam.d and vault-ssh-helper (look at alpine-vault.yaml and alpine.yaml)
-    - [ ] Proxmox
-    - [ ] OPNSense Router
-    - [ ] Mikrotik
+    - [ ] Proxmox                                        (plan #6)
+    - [ ] OPNSense Router                                (plan #7)
+    - [ ] Mikrotik                                        
 
 
 - [x] Vault OIDC (https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-identity-provider)

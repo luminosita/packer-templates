@@ -1,0 +1,77 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: oidc
+  labels:
+    provider: vault
+spec:
+  compositeTypeRef:
+    apiVersion: kundun.dev/v1alpha1
+    kind: OIDC
+  patchSets:
+  resources:
+  - name: entity
+    base:
+      apiVersion: kundun.dev/v1alpha1
+      kind: Entity
+      spec:
+        managementPolicies: ["Observe"]
+  - name: assignment
+    base:
+      apiVersion: identity.vault.upbound.io/v1alpha1
+      kind: OidcAssignment
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+    # - type: FromCompositeFieldPath
+    #   fromFieldPath: spec.groupIds
+    #   toFieldPath: spec.forProvider.groupIds
+    # - type: FromCompositeFieldPath
+    #   fromFieldPath: spec.entityIds
+    #   toFieldPath: spec.forProvider.entityIds
+  - name: key
+    base:
+      apiVersion: identity.vault.upbound.io/v1alpha1
+      kind: OidcKey
+      spec:
+        forProvider:
+          allowedClientIds:  [ "" ]
+          rotationPeriod: 1h
+          verificationTtl: 2h
+          algorithm: RS256
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+  - name: client
+    base:
+      apiVersion: identity.vault.upbound.io/v1alpha1
+      kind: OidcClient
+      spec:
+        forProvider:
+          idTokenTtl: 1800
+          accessTokenTtl: 3600
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.key
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.assignments
+      transforms:
+        - type: convert
+          convert:
+            toType: array
+            format: json
+    - fromFieldPath: spec.redirectUris
+      toFieldPath: spec.forProvider.redirectUris
+  - name: provider
+    base:
+      apiVersion: identity.vault.upbound.io/v1alpha1
+      kind: OidcProvider
+    patches:
+    - fromFieldPath: spec.id
+      toFieldPath: spec.forProvider.name
+    - fromFieldPath: spec.scopesSupported
+      toFieldPath: spec.forProvider.scopesSupported
+

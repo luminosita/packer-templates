@@ -1,0 +1,47 @@
+---
+apiVersion: identity.vault.upbound.io/v1alpha1
+kind: OidcScope
+spec:
+  forProvider:
+    name: email
+    template: |
+      {
+        "email": {{identity.entity.metadata.email}}
+      }   
+---
+apiVersion: identity.vault.upbound.io/v1alpha1
+kind: OidcScope
+spec:
+  forProvider:
+    name: groups
+    template: |
+      {
+        "groups": {{identity.entity.groups.names}}
+      }   
+---
+apiVersion: identity.vault.upbound.io/v1alpha1
+kind: OidcScope
+spec:
+  forProvider:
+    name: user
+    template: |
+      {
+          "username": {{identity.entity.name}},
+          "contact": 
+          {
+              "email": {{identity.entity.metadata.email}},
+              "phone_number": {{identity.entity.metadata.phone_number}}
+          }
+      }
+---
+apiVersion: kundun.dev/v1alpha1
+kind: OIDC
+metadata:
+  name: my-oidc
+spec:
+  id: laza
+  redirectUris: [ "https://auth.contoso.com:8443/oauth2/laza/authorization-code-callback" ]
+  scopesSupported: [ "email", "user", "groups" ]
+  compositionSelector:
+    matchLabels:
+      provider: vault

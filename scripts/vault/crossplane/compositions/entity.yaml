@@ -1,0 +1,116 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: Composition
+metadata:
+  name: entity
+  labels:
+    provider: vault
+spec:
+  compositeTypeRef:
+    apiVersion: kundun.dev/v1alpha1
+    kind: Entity
+  patchSets:
+  - name: metadata
+    patches:
+    - fromFieldPath: metadata.annotations
+      toFieldPath: metadata.annotations
+    - fromFieldPath: spec.id
+      toFieldPath: metadata.name
+  - name: password
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.passwordSecretRef.namespace
+      toFieldPath: spec.forProvider.dataJsonSecretRef.namespace
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.passwordSecretRef.name
+      toFieldPath: spec.forProvider.dataJsonSecretRef.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.passwordSecretRef.key
+      toFieldPath: spec.forProvider.dataJsonSecretRef.key
+  resources:
+  - name: userpass-mount
+    base:
+      apiVersion: vault.vault.upbound.io/v1alpha1
+      kind: Mount
+      spec:
+        forProvider:
+          path: userpass
+          type: userpass
+    patches:
+    - type: PatchSet
+      patchSetName: metadata
+  - name: policy
+    base:
+      apiVersion: vault.vault.upbound.io/v1alpha1
+      kind: Policy
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.policy.name
+      toFieldPath: spec.forProvider.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.policy.paths
+      toFieldPath: spec.forProvider.policy
+  - name: user
+    base:
+      apiVersion: generic.vault.upbound.io/v1alpha1
+      kind: Endpoint
+    patches:
+    - type: PatchSet
+      patchSetName: password
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.username
+      toFieldPath: spec.forProvider.path
+      transforms:
+      - type: string
+        string:
+          fmt: "auth/userpass/users/%s"
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.accessor
+      toFieldPath: status.userPassAccessor
+  - name: entity
+    base:
+      apiVersion: identity.vault.upbound.io/v1alpha1
+      kind: Entity
+      spec:
+        forProvider:
+        disabled: false
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.username
+      toFieldPath: spec.forProvider.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.metadata
+      toFieldPath: spec.forProvider.metadata
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.id
+      toFieldPath: status.entityId
+  - name: entityAlias
+    base:
+      apiVersion: identity.vault.upbound.io/v1alpha1
+      kind: EntityAlias
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.username
+      toFieldPath: spec.forProvider.name
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.userPassAccessor
+      toFieldPath: spec.forProvider.mountAccessor
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.entityId
+      toFieldPath: spec.forProvider.canonicalId
+  - name: group
+    base:
+      apiVersion: identity.vault.upbound.io/v1alpha1
+      kind: GroupMemberEntityIds
+    patches:
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.groupName
+      toFieldPath: spec.forProvider.groupId
+    - type: FromCompositeFieldPath
+      fromFieldPath: status.entityId
+      toFieldPath: spec.forProvider.memberEntityIds
+      transforms:
+        - type: convert
+          convert:
+            toType: array
+            format: json

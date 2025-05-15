@@ -1,0 +1,44 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: groups.kundun.dev
+spec:
+  group: kundun.dev
+  names:
+    kind: Group
+    plural: groups
+  claimNames:
+    kind: GroupClaim
+    plural: groupclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Group ID
+              name:
+                type: string
+                description: Group name
+              entities:
+                type: array
+                items:
+                  description: Entity IDs
+                  type: string
+                minItems: 1
+              required: [ id, name, entities ]
+          status:
+            type: object
+            properties:
+              groupId:
+                type: string
+                description: Group ID
+

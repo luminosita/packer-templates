@@ -1,0 +1,38 @@
+---
+apiVersion: apiextensions.crossplane.io/v1
+kind: CompositeResourceDefinition
+metadata:
+  name: oidcs.kundun.dev
+spec:
+  group: kundun.dev
+  names:
+    kind: OIDC
+    plural: oidcs
+  claimNames:
+    kind: OIDCClaim
+    plural: oidcclaims
+  versions:
+  - name: v1alpha1
+    served: true
+    referenceable: true
+    schema:
+      openAPIV3Schema:
+        type: object
+        properties:
+          spec:
+            type: object
+            properties:
+              id:
+                type: string
+                description: OIDC ID
+              redirectUris:
+                type: array
+                items:
+                  type: string
+                minItems: 1
+              scopesSupported:
+                type: array
+                items:
+                  type: string
+                minItems: 1
+            required: [ id ]

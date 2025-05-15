@@ -1,0 +1,32 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: credentials
+  namespace: test
+type: Opaque
+stringData:
+  password: laza
+---
+apiVersion: kundun.dev/v1alpha1
+kind: Entity
+metadata:
+  name: my-entity
+spec:
+  id: laza
+  policy: 
+    name: laza-oidc
+    paths: |
+      path "identity/oidc/provider/laza/authorize" {
+        capabilities = [ "read" ]
+      }
+  username: laza 
+  passwordSecretRef: 
+    namespace: test
+    name: credentials
+    key: password
+  metadata:
+    email: vault@hashicorp.com
+  compositionSelector:
+    matchLabels:
+      provider: vault

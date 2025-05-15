@@ -2,7 +2,7 @@
 apiVersion: apiextensions.crossplane.io/v1
 kind: Composition
 metadata:
-  name: vault-pki
+  name: pki
   labels:
     provider: vault
 spec:

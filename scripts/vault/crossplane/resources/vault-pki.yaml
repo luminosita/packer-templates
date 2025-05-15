@@ -12,4 +12,4 @@ spec:
   country: SR
   compositionSelector:
     matchLabels:
-      provider: vault
+      provider: pki
