@@ -1,7 +1,8 @@
 apiVersion: kundun.dev/v1alpha1
-kind: PKI
+kind: PKIClaim
 metadata:
   name: my-pki
+  namespace: test
 spec:
   id: pki
   commonNamePrefix: Local
@@ -12,4 +13,19 @@ spec:
   country: SR
   compositionSelector:
     matchLabels:
-      provider: pki
+      provider: vault
+---
+apiVersion: pki.vault.upbound.io/v1alpha1
+kind: SecretBackendCert
+metadata:
+  name: my-pki-cert
+  namespace: test
+spec:
+  forProvider:
+    backendRef: 
+      name: pki-int
+    nameRef: 
+      name: pki-int
+    commonName: vault.com
+    ipSans: [ "172.16.1.11","172.16.1.12","172.16.1.13" ]
+    altNames: [ "*.vault.com" ]

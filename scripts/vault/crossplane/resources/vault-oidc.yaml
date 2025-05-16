@@ -43,23 +43,11 @@ spec:
           }
       }
 ---
-# apiVersion: identity.vault.upbound.io/v1alpha1
-# kind: OidcKey
-# metadata:
-#   name: key
-#   namespace: test
-# spec:
-#   forProvider:
-#     name: laza
-#     allowedClientIds:  [ "*" ]
-#     rotationPeriod: 3600
-#     verificationTtl: 7200
-#     algorithm: RS256
-# ---
 apiVersion: kundun.dev/v1alpha1
-kind: OIDC
+kind: OIDCClaim
 metadata:
   name: my-oidc
+  namespace: test
 spec:
   id: laza
   redirectUris: [ "https://auth.contoso.com:8443/oauth2/laza/authorization-code-callback" ]

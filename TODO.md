@@ -124,7 +124,7 @@ Internal name: cc_scripts_per_boot
 - [ ] gRPC plugin for KrakenD 
 
 ## Crossplane
-- [ ] PKI server certificate
+- [x] PKI server certificate
 - [ ] Replace to namespaced Claims
 - [ ] Pipeline with functions
 
