@@ -87,8 +87,6 @@ spec:
           apiVersion: pki.vault.upbound.io/v1alpha1
           kind: SecretBackendRootCert
           spec:
-            providerConfigRef:
-              name: vault-provider-config
             forProvider:
               backendRef: 
                 name: pki

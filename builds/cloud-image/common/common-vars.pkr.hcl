@@ -153,7 +153,7 @@ variable "vm_network_card_model" {
 }
 
 variable "vm_bridge_interface" {
-  type        = string
+  type        = list(string)
   description = "The name of the Proxmox bridge to attach the adapter to."
 }
 

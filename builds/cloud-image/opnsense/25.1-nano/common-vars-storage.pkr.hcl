@@ -1,0 +1,1 @@
+../../common/common-vars-storage.pkr.hcl

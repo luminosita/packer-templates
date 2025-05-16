@@ -54,4 +54,8 @@ write_files:
     ${username} ALL=(ALL) NOPASSWD:ALL
     ${build_username} ALL=(ALL) NOPASSWD:ALL     #Required for Packer
   path: /etc/sudoers.d/cloudinit
+- content: |
+    PS1="\u@\h:\w\$ "
+  owner: "${username}:${username}"
+  path: /home/${username}/.bash_profile
 ${write_files}

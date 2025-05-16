@@ -604,7 +604,9 @@ menu_cloud_image() {
   echo "       2 -  Ubuntu Cloud Image 24.04-lts"
   echo "       3 -  Debian Cloud Image 12-latest"
   echo "       4 -  GNS3 Cloud Image 3.0.4"
-  echo "       5 -  All Base Images"
+  echo "       5 -  OPNSense 25.1-nano"
+  echo "       6 -  Mikrotik CHR 7.18.2"
+  echo "       7 -  All Base Images"
   echo ""
   echo "      Other:"
   echo ""
@@ -647,6 +649,22 @@ menu_cloud_image() {
         press_enter
         ;;
     5 ) clear
+        if [ -z "$1" ]; then 
+          menu_option_cloud_image "OPNSense" "opnsense/25.1-nano" 
+        else 
+          echo "Unsupported cloud image !!!"
+        fi
+        press_enter
+        ;;
+    6 ) clear
+        if [ -z "$1" ]; then 
+          menu_option_cloud_image "Mikrotik CHR" "mikrotik/7.18.2" 
+        else 
+          echo "Unsupported cloud image !!!"
+        fi
+        press_enter
+        ;;
+    7 ) clear
         if [ -z "$1" ]; then 
           menu_option_cloud_image "Alpine" "alpine/3.21.2" 
           menu_option_cloud_image "Ubuntu" "ubuntu/24.04-lts" 

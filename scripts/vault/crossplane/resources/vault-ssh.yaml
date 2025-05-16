@@ -1,0 +1,8 @@
+apiVersion: kundun.dev/v1alpha1
+kind: SSHClaim
+metadata:
+  name: my-ssh
+  namespace: test
+spec:
+  id: ssh
+  defaultUser: laza

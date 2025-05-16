@@ -45,11 +45,13 @@ Internal name: cc_scripts_per_boot
       - [x] Disable cloud-init for clones
       - [x] Delete packer user on first clone boot (ssh_host_keys service -> first_boot service)
     - [x] GNS3
-    - [ ] OPNSense + Config patch + Config apply    (plan #1)
-    - [ ] Talos                                     (plan #2)
-    - [ ] Mikrotik                                  (plan #3)
-- [ ] Cleanup unused variables                      (plan #4)
-- [ ] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "                  (plan #5)
+    - [ ] OPNSense
+      - [x] Cloud image
+      - [ ] Config patch
+      - [ ] Config apply    
+    - [x] Mikrotik                                  
+- [x] Cleanup unused variables                      
+- [x] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "                  
 - [ ] Proxmox KSM
 - [x] Move MD articles to Wiki
 - [ ] Instructions for each template after creation is done
@@ -101,9 +103,6 @@ Internal name: cc_scripts_per_boot
         ```
     - [x] Ubuntu image: check /etc/pam.d/sshd file to see what should be commented
     - [x] Alpine image with pam.d and vault-ssh-helper (look at alpine-vault.yaml and alpine.yaml)
-    - [ ] Proxmox                                        (plan #6)
-    - [ ] OPNSense Router                                (plan #7)
-    - [ ] Mikrotik                                        
 
 
 - [x] Vault OIDC (https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-identity-provider)
@@ -125,8 +124,10 @@ Internal name: cc_scripts_per_boot
 
 ## Crossplane
 - [x] PKI server certificate
-- [ ] Replace to namespaced Claims
-- [ ] Pipeline with functions
+- [x] Replace to namespaced Claims
+- [x] Pipeline with functions
+- [x] SSH OTP 
+- [x] SSH CA
 
 ## Monitoring
 - [ ] Grafana Stack 
@@ -142,3 +143,10 @@ Internal name: cc_scripts_per_boot
 - [ ] React with OpenLDAP as backend or Backstage
 - [ ] CRUD UI
 - [ ] CRUD backend OpenLDAP
+
+## Boundary
+- [ ] Proxmox
+- [ ] OPNSense
+- [ ] Talos nodes (talosctl)
+- [ ] Kubectl
+- [ ] Mikrotik

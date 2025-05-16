@@ -112,10 +112,13 @@ source "proxmox-iso" "cloud-image" {
 
   qemu_agent = true
 
-  network_adapters {
-    bridge     = "${var.vm_bridge_interface}"
-    model      = "${var.vm_network_card_model}"
-    vlan_tag   = "${var.vm_vlan_tag}"
+  dynamic "network_adapters" {
+    for_each = var.vm_bridge_interface
+    content {
+      bridge     = network_adapters.value
+      model      = "${var.vm_network_card_model}"
+      vlan_tag   = "${var.vm_vlan_tag}"
+    }
   }
   
   template_name        = "${local.vm_name}"
