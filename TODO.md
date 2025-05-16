@@ -47,8 +47,9 @@ Internal name: cc_scripts_per_boot
     - [x] GNS3
     - [ ] OPNSense
       - [x] Cloud image
-      - [ ] Config patch
-      - [ ] Config apply    
+      - [x] Config patch
+      - [x] Config apply    
+      - [ ] SeaBIOS instead of UEFI
     - [x] Mikrotik                                  
 - [x] Cleanup unused variables                      
 - [x] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "                  
