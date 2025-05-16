@@ -112,6 +112,7 @@ Internal name: cc_scripts_per_boot
 
 - [ ] PVC for Vault Talos Proxmox
 - [ ] Vault Benchmark (https://developer.hashicorp.com/vault/tutorials/operations/benchmark-vault)
+- [ ] Auto registration for OIDC authorized accounts (Github successful login for an account that does not exist in Vault)
 
 ## Caddy
 
@@ -122,15 +123,22 @@ Internal name: cc_scripts_per_boot
 - [ ] KrakenD                                                   
 - [ ] gRPC plugin for KrakenD 
 
+## Crossplane
+- [ ] PKI server certificate
+- [ ] Replace to namespaced Claims
+- [ ] Pipeline with functions
+
 ## Monitoring
 - [ ] Grafana Stack 
 - [ ] Grafana Alerting
 
 ## Databases
-- [ ] OpenLDAP
+- [ ] OpenLDAP Cluster
 - [ ] Minio
+- [ ] Backstage
+- [ ] PSQL Atlas Operator
 
 ## UI
-- [ ] React with OpenLDAP as backend
+- [ ] React with OpenLDAP as backend or Backstage
 - [ ] CRUD UI
 - [ ] CRUD backend OpenLDAP

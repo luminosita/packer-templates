@@ -16,22 +16,11 @@ spec:
       toFieldPath: metadata.annotations
     - fromFieldPath: spec.id
       toFieldPath: metadata.name
-  - name: password
-    patches:
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.passwordSecretRef.namespace
-      toFieldPath: spec.forProvider.dataJsonSecretRef.namespace
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.passwordSecretRef.name
-      toFieldPath: spec.forProvider.dataJsonSecretRef.name
-    - type: FromCompositeFieldPath
-      fromFieldPath: spec.passwordSecretRef.key
-      toFieldPath: spec.forProvider.dataJsonSecretRef.key
   resources:
   - name: userpass-mount
     base:
-      apiVersion: vault.vault.upbound.io/v1alpha1
-      kind: Mount
+      apiVersion: auth.vault.upbound.io/v1alpha1
+      kind: Backend
       spec:
         forProvider:
           path: userpass
@@ -39,11 +28,16 @@ spec:
     patches:
     - type: PatchSet
       patchSetName: metadata
+    - type: ToCompositeFieldPath
+      fromFieldPath: status.atProvider.accessor
+      toFieldPath: status.userPassAccessor
   - name: policy
     base:
       apiVersion: vault.vault.upbound.io/v1alpha1
       kind: Policy
     patches:
+    - type: PatchSet
+      patchSetName: metadata
     - type: FromCompositeFieldPath
       fromFieldPath: spec.policy.name
       toFieldPath: spec.forProvider.name
@@ -56,7 +50,10 @@ spec:
       kind: Endpoint
     patches:
     - type: PatchSet
-      patchSetName: password
+      patchSetName: metadata
+    - type: FromCompositeFieldPath
+      fromFieldPath: spec.userFieldsJsonSecretRef
+      toFieldPath: spec.forProvider.dataJsonSecretRef
     - type: FromCompositeFieldPath
       fromFieldPath: spec.username
       toFieldPath: spec.forProvider.path
@@ -64,9 +61,6 @@ spec:
       - type: string
         string:
           fmt: "auth/userpass/users/%s"
-    - type: ToCompositeFieldPath
-      fromFieldPath: status.atProvider.accessor
-      toFieldPath: status.userPassAccessor
   - name: entity
     base:
       apiVersion: identity.vault.upbound.io/v1alpha1
@@ -75,6 +69,8 @@ spec:
         forProvider:
         disabled: false
     patches:
+    - type: PatchSet
+      patchSetName: metadata
     - type: FromCompositeFieldPath
       fromFieldPath: spec.username
       toFieldPath: spec.forProvider.name
@@ -89,6 +85,8 @@ spec:
       apiVersion: identity.vault.upbound.io/v1alpha1
       kind: EntityAlias
     patches:
+    - type: PatchSet
+      patchSetName: metadata
     - type: FromCompositeFieldPath
       fromFieldPath: spec.username
       toFieldPath: spec.forProvider.name
@@ -101,15 +99,21 @@ spec:
   - name: group
     base:
       apiVersion: identity.vault.upbound.io/v1alpha1
-      kind: GroupMemberEntityIds
+      kind: Group
     patches:
+    - type: PatchSet
+      patchSetName: metadata
     - type: FromCompositeFieldPath
       fromFieldPath: spec.groupName
-      toFieldPath: spec.forProvider.groupId
+      toFieldPath: spec.forProvider.name
     - type: FromCompositeFieldPath
       fromFieldPath: status.entityId
       toFieldPath: spec.forProvider.memberEntityIds
       transforms:
+        - type: string
+          string:
+            type: Format
+            fmt: '[ "%s" ]'
         - type: convert
           convert:
             toType: array

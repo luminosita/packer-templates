@@ -1,6 +1,9 @@
 ---
 apiVersion: identity.vault.upbound.io/v1alpha1
 kind: OidcScope
+metadata:
+  name: email
+  namespace: test
 spec:
   forProvider:
     name: email
@@ -11,6 +14,9 @@ spec:
 ---
 apiVersion: identity.vault.upbound.io/v1alpha1
 kind: OidcScope
+metadata:
+  name: groups
+  namespace: test
 spec:
   forProvider:
     name: groups
@@ -21,6 +27,9 @@ spec:
 ---
 apiVersion: identity.vault.upbound.io/v1alpha1
 kind: OidcScope
+metadata:
+  name: user
+  namespace: test
 spec:
   forProvider:
     name: user
@@ -34,6 +43,19 @@ spec:
           }
       }
 ---
+# apiVersion: identity.vault.upbound.io/v1alpha1
+# kind: OidcKey
+# metadata:
+#   name: key
+#   namespace: test
+# spec:
+#   forProvider:
+#     name: laza
+#     allowedClientIds:  [ "*" ]
+#     rotationPeriod: 3600
+#     verificationTtl: 7200
+#     algorithm: RS256
+# ---
 apiVersion: kundun.dev/v1alpha1
 kind: OIDC
 metadata:

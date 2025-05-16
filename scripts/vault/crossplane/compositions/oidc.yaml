@@ -11,12 +11,6 @@ spec:
     kind: OIDC
   patchSets:
   resources:
-  - name: entity
-    base:
-      apiVersion: kundun.dev/v1alpha1
-      kind: Entity
-      spec:
-        managementPolicies: ["Observe"]
   - name: assignment
     base:
       apiVersion: identity.vault.upbound.io/v1alpha1
@@ -36,9 +30,9 @@ spec:
       kind: OidcKey
       spec:
         forProvider:
-          allowedClientIds:  [ "" ]
-          rotationPeriod: 1h
-          verificationTtl: 2h
+          allowedClientIds:  [ "*" ]
+          rotationPeriod: 3600
+          verificationTtl: 7200
           algorithm: RS256
     patches:
     - fromFieldPath: spec.id
@@ -59,6 +53,10 @@ spec:
     - fromFieldPath: spec.id
       toFieldPath: spec.forProvider.assignments
       transforms:
+        - type: string
+          string:
+            type: Format
+            fmt: '[ "%s" ]'
         - type: convert
           convert:
             toType: array

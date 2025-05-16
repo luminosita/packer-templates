@@ -38,7 +38,7 @@ spec:
               username:
                 type: string
                 description: Username
-              passwordSecretRef:
+              userFieldsJsonSecretRef:
                 type: object
                 properties:
                   namespace:
@@ -58,7 +58,9 @@ spec:
                     type: string
                     description: Email
                 required: [ email ]
-            required: [ id, username ]
+              groupName: 
+                type: string
+            required: [ id, username, userFieldsJsonSecretRef, metadata, groupName ]
           status:
             type: object
             properties:

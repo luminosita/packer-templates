@@ -2,11 +2,16 @@
 apiVersion: v1
 kind: Secret
 metadata:
-  name: credentials
+  name: laza
   namespace: test
 type: Opaque
 stringData:
-  password: laza
+  fields: |
+    {
+      "password": "laza",
+      "token_policies": [ "oidc-auth" ],
+      "token_ttl": "1h"
+    }
 ---
 apiVersion: kundun.dev/v1alpha1
 kind: Entity
@@ -21,12 +26,13 @@ spec:
         capabilities = [ "read" ]
       }
   username: laza 
-  passwordSecretRef: 
+  userFieldsJsonSecretRef: 
     namespace: test
-    name: credentials
-    key: password
+    name: laza
+    key: fields
   metadata:
     email: vault@hashicorp.com
+  groupName: engineering
   compositionSelector:
     matchLabels:
       provider: vault

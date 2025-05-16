@@ -34,7 +34,7 @@ spec:
                   description: Entity IDs
                   type: string
                 minItems: 1
-              required: [ id, name, entities ]
+            required: [ id, name, entities ]
           status:
             type: object
             properties:
