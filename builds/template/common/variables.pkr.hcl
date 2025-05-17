@@ -32,18 +32,6 @@ variable "proxmox_node" {
   description = "The name of the Proxmox node that Packer will build templates on."
 }
 
-// Vault Settings
-
-variable "vault_api_url" {
-  type    = string
-  description = "The Vault API url."
-}
-
-variable "vault_api_cert_file" {
-  type    = string
-  description = "The Vault API file path to TLS certificate."
-}
-
 // Virtual Machine Settings
 
 variable "vm_clone_name" {

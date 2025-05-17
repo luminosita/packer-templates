@@ -5,13 +5,14 @@
 */
 
 // Removable Media Settings
-common_iso_storage = "OS"
+common_iso_storage = "local"
 
 // Where to store the completed VM templates
-vm_storage_pool = "pool0"
+vm_storage_pool = "local-lvm"
 
 // Boot and Provisioning Settings
-common_data_source      = "http"
+common_data_source      = "disk"
+
 common_http_ip          = null
 common_http_port_min    = 8000
 common_http_port_max    = 8099

@@ -6,7 +6,9 @@
 */
 
 // Default Account Credentials
-build_username           = "ubuntu"
-build_password           = "ubuntu"
-build_password_encrypted = "$6$Gg0b6uacy6apqKTP$OIvG1n8YUNpiDpsQgS02PgGgGY0egsYM0lqQq1lvOLKCAhMQcrY6SXq2K6ynt6RI8GVvmiagbKkcN6YXRzQtb1"
-build_key                = "Your public SSH key goes here"
+build_username              = "packer"
+build_password              = "packer"
+build_password_encrypted    = "$5$7hzsgDrzskZxbDi4$vzdXDy6XBiJKZgVEHUFek7MLsE0eTPDKs8P0Hmfhs1/"    #packer
+build_key                   = "Your public SSH key goes here"
+
+vm_ca_user_public_key_file  = "TrustCA Public Key"

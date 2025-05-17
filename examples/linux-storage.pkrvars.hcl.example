@@ -13,8 +13,8 @@
 
 // BIOS doesn't need EFI settings, but Packer does
 // VM EFI Settings
-vm_efi_storage_pool      = ""
-vm_efi_type              = ""
+vm_efi_storage_pool      = "local-lvm"
+vm_efi_type              = "4m"
 vm_efi_pre_enrolled_keys = false
 
 // VM Storage Settings
