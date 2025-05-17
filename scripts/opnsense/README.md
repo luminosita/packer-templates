@@ -1,5 +1,11 @@
 # OPNSense Configuration
 
+## Clone OPNSense Template
+
+Hardware:
+- Change BIOS type to SeaBIOS
+- Remove EFI disk
+
 ## Assign Interfaces
 
 Login thru Proxmox Console
