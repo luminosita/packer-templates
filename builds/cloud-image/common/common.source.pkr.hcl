@@ -3,12 +3,8 @@
 
 locals {
   bios_boot_command = [
-    "c<wait5>",
-    "linux /sysresccd/boot/x86_64/vmlinuz archisobasedir=sysresccd archisolabel=RESCUE1200 iomem=relaxed ${local.kernel_command}",
-    "<enter><wait10>",
-    "initrd /sysresccd/boot/intel_ucode.img /sysresccd/boot/amd_ucode.img /sysresccd/boot/x86_64/sysreccd.img",
-    "<enter><wait10>",
-    "boot",
+    "<tab><wait5>",
+    " ${local.kernel_command}<wait2>",
     "<enter>"
   ]
   uefi_boot_command = [

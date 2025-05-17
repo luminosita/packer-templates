@@ -23,10 +23,6 @@
 - [x] Externalize instance install scripts (Hashicorp script ..., )
 - [x] Cloud init Ubuntu error in logs
 - [x] Delete SSHD keys
-    ```
-    Any scripts in the scripts/per-boot directory on the datasource will be run every time the system boots. Scripts will be run in alphabetical order. This module does not accept any config keys.
-    ```
-Internal name: cc_scripts_per_boot
 - [x] Disable public keys from cloud-init
 - [x] Delete build_password_encrypted
 - [x] Trust CA Key SSH Authority (backup) instead of public SSH keys in .authorized_keys
@@ -45,11 +41,11 @@ Internal name: cc_scripts_per_boot
       - [x] Disable cloud-init for clones
       - [x] Delete packer user on first clone boot (ssh_host_keys service -> first_boot service)
     - [x] GNS3
-    - [ ] OPNSense
+    - [x] OPNSense
       - [x] Cloud image
       - [x] Config patch
       - [x] Config apply    
-      - [ ] SeaBIOS instead of UEFI
+      - [x] SeaBIOS boot command not working
     - [x] Mikrotik                                  
 - [x] Cleanup unused variables                      
 - [x] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "                  
@@ -61,7 +57,6 @@ Internal name: cc_scripts_per_boot
 
 ## Vault
 
-- [ ] Finish README for AppRole (https://developer.hashicorp.com/vault/tutorials/auth-methods/approle)
 - [x] Raft Cluster (https://developer.hashicorp.com/vault/tutorials/raft/raft-storage)
 
 - [x] Recreate SSHD keys
@@ -71,6 +66,7 @@ Internal name: cc_scripts_per_boot
 - [ ] Dynamic Secrets 
 - [ ] Kubernete Secrets Injector 
 - [ ] AppRole Authentication
+    - [ ] Finish README for AppRole (https://developer.hashicorp.com/vault/tutorials/auth-methods/approle)
 
 - [x] Setup cluster script to avoid writing tokens and keys in history
 - [x] Certificates expiration and rotation
@@ -120,8 +116,6 @@ Internal name: cc_scripts_per_boot
 - [x] Caddy Security module                        
 - [x] Caddy ACME cert-mgr, TLS                     
 - [x] Caddy OIDC Vault                             
-- [ ] KrakenD                                                   
-- [ ] gRPC plugin for KrakenD 
 
 ## Crossplane
 - [x] PKI server certificate
@@ -138,14 +132,25 @@ Internal name: cc_scripts_per_boot
 - [ ] OpenLDAP Cluster
 - [ ] Minio
 - [ ] Backstage
+    - [ ] LDAP
+    - [ ] Kubernetes
+    - [ ] Grafana
+    - [ ] Git repo templates
 - [ ] PSQL Atlas Operator
+
+## API
+- [ ] KrakenD                                                   
+- [ ] gRPC plugin for KrakenD 
 
 ## UI
 - [ ] React with OpenLDAP as backend or Backstage
 - [ ] CRUD UI
 - [ ] CRUD backend OpenLDAP
 
-## Boundary
+## Boundary                 
+- [ ] Dev setup                 (plan #1)
+- [ ] Kubernetes deployment     (plan #2)
+- [ ] Vault authentication      (plan #3)
 - [ ] Proxmox
 - [ ] OPNSense
 - [ ] Talos nodes (talosctl)

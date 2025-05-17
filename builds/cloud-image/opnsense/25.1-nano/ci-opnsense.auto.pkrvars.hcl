@@ -1,5 +1,6 @@
 vm_os_name       = "opnsense"
 vm_os_version    = "25.1"
+vm_bios          = "seabios"
 
 vm_disk_size            = [ "10G" ]
 vm_bridge_interface     = [ "vmbr0", "vmbr3", "vmbr2" ]
