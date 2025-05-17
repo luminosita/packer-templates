@@ -9,11 +9,11 @@ HOSTNAME=opn17
 DOMAIN=lan
 DNS_SERVER=192.168.1.1
 
-cat config.xml.tpl | \
+cat scripts/config.xml.tpl | \
     sed -e "s/\#\#WANIP\#\#/${WANIP}/" | \
     sed -e "s/\#\#WANGW\#\#/${WAN_GW}/" | \
     sed -e "s/\#\#LANNET\#\#/${LAN_NET}/" | \
     sed -e "s/\#\#HOSTNAME\#\#/${HOSTNAME}/" | \
     sed -e "s/\#\#DOMAIN\#\#/${DOMAIN}/" | \
-    sed -e "s/\#\#DNSSERVER\#\#/${DNS_SERVER}/" | tee config.xml
+    sed -e "s/\#\#DNSSERVER\#\#/${DNS_SERVER}/" | tee config.xml > /dev/null
 

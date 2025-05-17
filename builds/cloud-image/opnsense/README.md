@@ -1,10 +1,6 @@
 # OPNSense Configuration
 
-## Clone OPNSense Template
-
-Hardware:
-- Change BIOS type to SeaBIOS
-- Remove EFI disk
+Clone OPNSense Template and inspect `Hardware` section
 
 ## Assign Interfaces
 
@@ -18,17 +14,17 @@ Enable `DHCP` on `LAN`
 
 ## Generate Configuration File
 
-Edit `config.sh` with proper values
+Edit `scripts/config.sh` with proper values
 
 ```bash
-$ bash config.sh
+$ bash scripts/config.sh
 ```
 
 ## Apply Configuration
 
 ### Access Web UI
 
-You need a browser on a host on the same Proxmox `bridge` as `LAN` interface (`vtnet1`), which should be the second network device in VM
+You need a browser with IP coming from OPNSense `LAN` DHCP server (e.g. Proxmox VM on the same `bridge` as `LAN` interface `vtnet1`, which should be the second network device in VM)
 
 ### Firmware
 
@@ -44,7 +40,7 @@ Update firmware (System > Firmware)
 
 System > Configuration > Backups > Restore
 
-Load `config.xml` file created by `config.sh` script
+Load `config.xml` file created by `scripts/config.sh` script
 
 Select `Restore configuration`
 

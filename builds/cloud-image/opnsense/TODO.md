@@ -1,0 +1,5 @@
+- [x] Cloud image
+- [x] Config patch
+- [x] Config apply    
+- [x] SeaBIOS boot command not working
+- [ ] Auto-import configuration on first boot

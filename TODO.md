@@ -1,4 +1,3 @@
-- [ ] CPU type for cloud-image and template?
 - [x] HDD resize
 - [x] Memory final?
 - [x] Random VM id scope
@@ -8,17 +7,6 @@
 - [x] Download cloud-init, cloud-init-output logs
 - [x] Problem with network when I set network-config
 - [x] Arrange cloud-init files
-- [ ] Cloud images
-    - [ ] Fix "disk is full" GNS3 issue
-    - [ ] Download cloud image to ISO storage (reduce RAM requirement for SystemRescue image)
-    - [ ] Stream file from storage directly to dd
-        ```bash
-        nbdcopy -- [ qemu-nbd -f qcow2 myVM.qcow2 ] - | ssh user@otherhost cat '>' raw-image-elsewhere
-        The opposite would be:
-
-        ssh user@otherhost cat raw-image-elsewhere | nbdcopy -- - [ qemu-nbd -f qcow2 local.qcow2 ]
-        ```
-
 - [x] Allow password authentication. Final script should lock password authentication
 - [x] Externalize instance install scripts (Hashicorp script ..., )
 - [x] Cloud init Ubuntu error in logs
@@ -40,20 +28,14 @@
       - [x] Unseal Vault with multiple Unseal Keys
       - [x] Disable cloud-init for clones
       - [x] Delete packer user on first clone boot (ssh_host_keys service -> first_boot service)
-    - [x] GNS3
-    - [x] OPNSense
-      - [x] Cloud image
-      - [x] Config patch
-      - [x] Config apply    
-      - [x] SeaBIOS boot command not working
-    - [x] Mikrotik                                  
-- [x] Cleanup unused variables                      
-- [x] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "                  
-- [ ] Proxmox KSM
-- [x] Move MD articles to Wiki
-- [ ] Instructions for each template after creation is done
-- [x] Fix hostname on clones
-- [ ] Delete log files, shell history for VM template (cloud-init logs)
+    - [x] Cleanup unused variables                      
+    - [x] PS1 prompt (https://phoenixnap.com/kb/change-bash-prompt-linux) PS1="\u@\h:\w\$ "                  
+    - [x] Move MD articles to Wiki
+    - [x] Fix hostname on clones
+    - [ ] Proxmox KSM
+    - [ ] Delete log files, shell history for VM template (cloud-init logs)
+    - [ ] Instructions for each template after creation is done
+    - [ ] CPU type for cloud-image and template?
 
 ## Vault
 
@@ -63,10 +45,6 @@
 - [x] Token and seal files in /tmp
 - [x] Vault crossplane provider                             
 - [x] ACME, Cert-manager, Vault integration             
-- [ ] Dynamic Secrets 
-- [ ] Kubernete Secrets Injector 
-- [ ] AppRole Authentication
-    - [ ] Finish README for AppRole (https://developer.hashicorp.com/vault/tutorials/auth-methods/approle)
 
 - [x] Setup cluster script to avoid writing tokens and keys in history
 - [x] Certificates expiration and rotation
@@ -85,8 +63,6 @@
     - [x] Store SSH key to Bitwarden
     - [x] Store CA/Intermediate private keys to Bitwarden or only Private Key password
     - [x] No password entry repetition
-- [ ] Update README with certificate login instructions
-- [ ] Update README with vault ssh login instructions
 
 
 - [ ] Vault SSH Helper
@@ -104,11 +80,17 @@
 
 - [x] Vault OIDC (https://developer.hashicorp.com/vault/tutorials/auth-methods/oidc-identity-provider)
 - [x] Vault MFA (SHA-1 for Andorid Google Authenticator) (https://developer.hashicorp.com/vault/docs/auth/login-mfa#time-based-one-time-password-totp)                                                
-- [ ] Dex with Vault connector for refresh tokens               
 
+- [ ] Dex with Vault connector for refresh tokens               
 - [ ] PVC for Vault Talos Proxmox
 - [ ] Vault Benchmark (https://developer.hashicorp.com/vault/tutorials/operations/benchmark-vault)
 - [ ] Auto registration for OIDC authorized accounts (Github successful login for an account that does not exist in Vault)
+- [ ] Update README with certificate login instructions
+- [ ] Update README with vault ssh login instructions
+- [ ] Dynamic Secrets 
+- [ ] Kubernete Secrets Injector 
+- [ ] AppRole Authentication
+
 
 ## Caddy
 
