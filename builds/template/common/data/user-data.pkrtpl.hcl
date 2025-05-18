@@ -29,6 +29,12 @@ packages:
 - vim
 - gnupg
 - unzip
+- xterm 
+- util-linux 
+- dbus 
+- ttf-freefont 
+- xauth 
+- firefox
 ${packages}
 runcmd:
 ${run_commands}
@@ -48,7 +54,10 @@ write_files:
     ChallengeResponseAuthentication yes
     UsePAM yes
 
-    TrustedUserCAKeys /etc/ssh/ca_user_key.pub
+    TrustedUserCAKeys /etc/ssh/ca_key.pub
+    PermitTTY yes
+    X11Forwarding yes
+    X11UseLocalhost no
   path: /etc/ssh/sshd_config.d/01-harden-ssh.conf
 - content: |
     ${username} ALL=(ALL) NOPASSWD:ALL

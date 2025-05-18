@@ -2,7 +2,7 @@ vm_name                 = "vault-1.19.2"
 vm_default_username     = "vault"
 
 vm_certs      = [      
-    "ca_user_key.pub",
+    "ca_key.pub",
     "vault/ca-chain.cert.pem",
     "vault/vault.lan.cert.pem",
     "vault/vault.lan.key.pem"

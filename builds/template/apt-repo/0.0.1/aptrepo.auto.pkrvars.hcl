@@ -2,7 +2,7 @@ vm_name                 = "apt-repo-0.0.1"
 vm_default_username     = "repo"
 
 vm_certs      = [      
-    "ca_user_key.pub"
+    "ca_key.pub"
 ]
 
 vm_scripts      = [   

@@ -23,7 +23,9 @@ log 'Disabling SSH Password Authentication ...'
 sudo sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config.d/01-harden-ssh.conf
 
 log 'Copying SSH CA Public Key ...'
-sudo cp ./ca_user_key.pub /etc/ssh
+sudo cp ./ca_key.pub /etc/ssh
+sudo chown 1000:1000 /etc/ssh/ca_key.pub
+sudo chmod 644 /etc/ssh/ca-key.pub
 
 # https://computingforgeeks.com/creating-ubuntu-and-debian-os-template-on-proxmox-ve/
 log 'Template Cleanup ...'

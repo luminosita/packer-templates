@@ -3,7 +3,7 @@ vm_default_username     = "generic"
 
 vm_certs      = [      
     "vault/vault.lan.cert.pem",
-    "ca_user_key.pub"
+    "ca_key.pub"
 ]
 
 vm_scripts      = [      
